@@ -1,346 +1,1077 @@
-# String Class Deep Dive
+# Java String Class - Complete Deep Dive
 
 > **Module**: Java Data Types  
-> **Topic**: String Class Deep Dive
+> **Difficulty**: Intermediate to Advanced  
+> **Estimated Time**: 3 hours
 
 ---
 
 ## 📋 Table of Contents
 
-
-
-- [Q1: What is the difference between “==” and “equals(…)” in comparing Java String ob](#q1)
-- [Q2: Can you explain how Strings are interned in Java?](#q2)
-- [Q3: What will be the output of the following code snippet?](#q3)
-- [Q4: What is the main difference between String, StringBuffer, and StringBuilder ?](#q4)
-- [Q5: Can you write a method that reverses a given String?](#q5)
-- [Q6: Can you remember a design pattern discussed in this post?](#q6)
-- [Q7: Can you give some examples of the usage of the flyweight design pattern in Java?](#q7)
-- [Q8: What is a static factory method, and when will you use it?](#q8)
-- [Q9: How will you split the following string of text into individual vehicle types?
-“](#q9)
-- [Q10: What are the different ways to concatenate strings? and which approach is most ](#q10)
-- [Q11: Java being a stack based language, allows you to make recursive method calls. Ca](#q11)
+1. [Introduction to String](#introduction-to-string)
+2. [String Immutability](#string-immutability)
+3. [String Pool & Interning](#string-pool--interning)
+4. [String vs StringBuffer vs StringBuilder](#string-vs-stringbuffer-vs-stringbuilder)
+5. [String Comparison](#string-comparison)
+6. [String Manipulation](#string-manipulation)
+7. [String Concatenation Performance](#string-concatenation-performance)
+8. [Design Patterns](#design-patterns)
+9. [Regular Expressions](#regular-expressions)
+10. [Java 8 String Features](#java-8-string-features)
+11. [Best Practices](#best-practices)
 
 ---
 
-## 🔹 Q1: What is the difference between “==” and “equals(…)” in comparing Java String objects?
+## Introduction to String
 
-**Answer:**
+The `String` class is one of the most frequently used classes in Java. It represents a sequence of characters and is **immutable**.
 
-When you use “==” (i.e. shallow comparison), you are actually comparing the two object references to see if they point to the same object. When you use
-“equals(…)”, which is a “deep comparison” that compares the actual string values. For example:
-The variable s1 refers to the String instance created by “Hello”. The object referred to by s2 is created with s1 as an initializer, thus the contents of the two
-String objects are identical, but they are 2 distinct objects having 2 distinct references s1 and s2. This means that s1 and s2 do not refer to the same object and
-are, therefore, not ==, but equals( ) as they have the same value “Hello”. The s1 == s3 is true, as they both point to the same object due to internal caching. The
-references s1 and s3 are interned and points to the same object in the string pool.public class StringEquals {
-public static void main (String [ ] args) {
- String s1 = "Hello" ;
- String s2 = new String (s1);
- String s3 = "Hello" ;
- System.out.println (s1 + " equals " + s2 + "--> " + s1.equals (s2)); //true
- System.out.println (s1 + " == " + s2 + " --> " + (s1 == s2)); //false
- System.out.println (s1 + " == " + s3+ " --> " + (s1 == s3)); //true
+### String Characteristics
 
-Create a String object as a literal without the “new” keyword for caching
-In Java 6 — all interned strings were stored in the PermGen – the fixed size part of heap mainly used for storing loaded classes and string pool.
-In Java 7 – the string pool was relocated to the heap. So, you are not restricted by the limited size.
-How about comparing the other objects like Integer, Boolean, and custom objects like “Pet”? Object equals Vs “ ==“, and pass by reference Vs value .
+```
+┌─────────────────────────────────────────────────────────────┐
+│              STRING CLASS CHARACTERISTICS                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ✓ Immutable - Cannot be changed after creation            │
+│  ✓ Final - Cannot be subclassed                            │
+│  ✓ Thread-safe - Due to immutability                       │
+│  ✓ Cached - String literals are pooled                     │
+│  ✓ Implements CharSequence, Serializable, Comparable       │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
 
----
+### String Creation Methods
 
-## 🔹 Q2: Can you explain how Strings are interned in Java?
+```java
+// Method 1: String literal (RECOMMENDED)
+String s1 = "Hello";  // Stored in string pool
 
-**Answer:**
+// Method 2: new keyword (NOT RECOMMENDED)
+String s2 = new String("Hello");  // Creates new object on heap
 
-String class is designed with the Flyweight design pattern in mind. Flyweight is all about re-usability without having to create too many objects in
-memory .
-[ Further Reading: Flyweight pattern and improve memory usage & performance ]
-A pool of Strings is maintained by the String class. When the intern( ) method is invoked, equals(..) method is invoked to determine if the String already exist
-in the pool. If it does then the String from the pool is returned instead of creating a new object. If not already in the string pool, a new String object is added to
-the pool and a reference to this object is returned. For any two given strings s1 & s2, s1.intern( ) == s2.intern( ) only if s1.equals(s2) is true.
-Two String objects are created by the code shown below. Hence s1 == s2 returns false.
+// Method 3: Character array
+char[] chars = {'H', 'e', 'l', 'l', 'o'};
+String s3 = new String(chars);
 
-s1.intern() == s2.intern() returns true, but you have to remember to make sure that you actually do intern() all of the strings that you’re going to compare. It’ s
-easy to for get to intern() all strings and then you can get confusingly incorrect results. Also, why unnecessarily create more objects?
-Instead use string literals as shown below to intern automatically:
-s1 and s2 point to the same String object in the pool. Hence s1 == s2 returns true.
-Since interning is automatic for String literals String s1 = “A”, the intern( ) method is to be used on Strings constructed with new String(“A”).
+// Method 4: StringBuilder/StringBuffer
+StringBuilder sb = new StringBuilder("Hello");
+String s4 = sb.toString();
 
----
-
-## 🔹 Q3: What will be the output of the following code snippet?
-
-**Answer:**
-
-The output will be/Two new objects are created. Not interned and not recommended.
-String s1 = new String ("A");
-String s2 = new String ("A");
-String s1 = "A";
-String s2 = "A";
-String s = " Hello " ;
-s += " World " ;
-s.trim( );
-System.out.println (s);
-
-with the leading and trailing spaces. Some would expect a trimmed “Hello W orld”. So, what concepts does this question try to test?
-1. String objects are immutable and there is a trick in s.trim( ) line.
-2. Concept of object references and unreachable objects that are eligible for garbage collection. 3 String objects are created, and 2 of them become
-unreachable as there are no references to them, and gets garbage collected.
-What follow on questions can you expect?
-1. You might get a follow on question on how many string objects are created in the above example and when will it become an unreachable object to be
-garbage collected.
-2. You might also be asked a follow on question as to if the above code snippet is ef ficient.
-The best way to explain this is via a self-explanatory diagram as shown below. Click on it to enlarge.
-" Hello World "
-
-No of String objects created
-If you want the above code to output “Hello W orld” with leading and trailing spaces trimmed then assign the s.trim( ) to the variable “s”. This will make the
-reference “s” to now point to the newly created trimmed String object.
-The above code can be rewritten as shown below
-StringBuilder sb = new StringBuilder (" Hello " );
-sb.append (" World " );
-System.out.println (sb.toString ().trim( ));
+// Method 5: valueOf() - static factory method
+String s5 = String.valueOf(123);
+String s6 = String.valueOf(true);
+```
 
 ---
 
-## 🔹 Q4: What is the main difference between String, StringBuffer, and StringBuilder ?
+## String Immutability
 
-**Answer:**
+### What Does Immutable Mean?
 
-String is immutable in Java, and this immutability gives the benefits like security and performance discussed above.
-StringBuffer is mutable, hence you can add strings to it, and when required, convert to an immutable String with the toString( ) method.
-StringBuilder is very similar to a StringBuffer, but StringBuffer has one disadvantage in terms of performance as all of its public methods are
-synchronized for thread-safety. StringBuilder in Java is a copy of StringBuffer but without synchronization to be used in local variables which are
-inherently thread-safe. So, if thread-safety is required, use StringBuf fer, otherwise use StringBuilder .
+Once a String object is created, its value **cannot be changed**. Any operation that appears to modify a String actually creates a new String object.
 
----
+```
+┌─────────────────────────────────────────────────────────────┐
+│              STRING IMMUTABILITY EXPLAINED                  │
+└─────────────────────────────────────────────────────────────┘
 
-## 🔹 Q5: Can you write a method that reverses a given String?
+Code: String s = "Hello";
+      s = s + " World";
 
-**Answer:**
+Step 1: Create "Hello"
+┌──────────────────┐
+│  String: "Hello" │  ← s points here
+└──────────────────┘
 
-A popular Java interview coding question.
-Example 1 : It is always a best practice to reuse the API methods as shown below with the StringBuilder(input).r everse( ) method as it is fast, ef ficient (uses bit
-wise operations) and knows how to handle Unicode surrogate pairs, which most other solutions ignore. The code shown below handles null and empty strings,
-and a StringBuilder is used as opposed to a thread-safe StringBuf fer, as the StringBuilder is locally defined, and local variables are implicitly thread-safe.
-Example 2 : Some interviewers might probe you to write other lesser elegant code using either recursion or iterative swapping. Some developers find it very
-difficult to handle recursion, especially to work out the termination condition. All recursive methods need to have a condition to terminate the recursion.
-Recursive solution.public static String reverse (String input ) { 
- if(input == null || input .length ( ) == 0){ 
- return input; 
- } 
- 
- return new StringBuilder (input ).reverse ( ).toString ( ); 
+Step 2: Concatenate (creates NEW string)
+┌──────────────────┐
+│  String: "Hello" │  (becomes unreachable)
+└──────────────────┘
 
-Java Recursion – String examplepublic String reverse (String str) { 
- // exit or termination condition 
- if ((null == str) || (str.length ( ) <= 1)) { 
- return str; 
- } 
- 
- // put the first character (i.e. charAt(0)) to the end. String indices are 0 based. 
- // and recurse with 2nd character (i.e. substring(1)) onwards 
- return reverse (str.substring (1)) + str.charAt (0); 
+┌────────────────────────┐
+│  String: "Hello World" │  ← s now points here
+└────────────────────────┘
 
-Step 1: reverse(“RA W”)
-Step 2: reverse(A W) + “R” [Note: charAt[0] = “R”, and str .substring(1) = “A W” ]
-Step 3: reverse(W) + “A” + “R” [Note: charAt[0] = “A”, and str .substring(1) = “W” ]
-Step 4: return “W” + “A” + “R” [Exit condition is r eached when “str.length( ) <=1” ]
-outputs: “WAR”
-Example 3 : Iterative solution.
+Original "Hello" is eligible for garbage collection
+```
 
----
+### Why Immutable?
 
-## 🔹 Q6: Can you remember a design pattern discussed in this post?
+```
+┌─────────────────────────────────────────────────────────────┐
+│           BENEFITS OF STRING IMMUTABILITY                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Security                                             │
+│     • Strings used in security (passwords, URLs)            │
+│     • Cannot be modified after validation                   │
+│                                                              │
+│  2. ✅ Thread Safety                                        │
+│     • Multiple threads can share strings safely             │
+│     • No synchronization needed                             │
+│                                                              │
+│  3. ✅ Caching/Pooling                                      │
+│     • String literals can be reused                         │
+│     • Saves memory                                          │
+│                                                              │
+│  4. ✅ Hash Code Caching                                    │
+│     • Hash code calculated once                             │
+│     • Efficient for HashMap/HashSet keys                    │
+│                                                              │
+│  5. ✅ Class Loading                                        │
+│     • Class names are strings                               │
+│     • Immutability ensures integrity                        │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
 
-**Answer:**
+### Immutability Example
 
-Flyweight design pattern. The flyweight design pattern is a structural pattern used to improve memory usage (i.e. due to fewer objects and object reuse)
-and performance (i.e. due to shorter and less frequent garbage collections).public String reverse (String str) { 
- // validate 
- if ((null == str) || (str.length ( ) <= 1)) { 
- return str; 
- } 
- 
- char[ ] chars = str.toCharArray ( ); 
- int rhsIdx = chars .length - 1; 
- 
- //iteratively swap until exit condition lhsIdx < rhsIdx is reached 
- for (int lhsIdx = 0; lhsIdx < rhsIdx; lhsIdx ++) { 
- char temp = chars [lhsIdx ]; 
- chars [lhsIdx ] = chars [rhsIdx ]; 
- chars [rhsIdx --] = temp; 
- } 
- 
- return new String (chars );
+```java
+public class StringImmutability {
+    public static void main(String[] args) {
+        String s = "Hello";
+        s.concat(" World");  // Creates new string, but not assigned
+        System.out.println(s);  // Still prints "Hello"
+        
+        s = s.concat(" World");  // Now assigned to s
+        System.out.println(s);  // Prints "Hello World"
+    }
+}
+```
 
----
+### Common Mistake: Expecting Mutation
 
-## 🔹 Q7: Can you give some examples of the usage of the flyweight design pattern in Java?
+```java
+// ❌ WRONG: Expecting string to change
+String s = " Hello ";
+s.trim();  // Creates new trimmed string, but not assigned!
+System.out.println(s);  // Still " Hello " with spaces
 
-**Answer:**
+// ✅ CORRECT: Assign the result
+String s = " Hello ";
+s = s.trim();  // Assign the new trimmed string
+System.out.println(s);  // "Hello" without spaces
+```
 
-Example 1 : As discussed above, String objects are managed as flyweight. Java puts all fixed String literals into a literal pool. For redundant literals, Java keeps
-only one copy in the pool.
-Example 2 : The W rapper classes like Integer, Float, Decimal, Boolean, and many other classes like BigDecimal having the valueOf static factory method to
-apply the flyweight design pattern to conserve memory by reusing the objects.String author = "Little brown fox"; 
-String authorCopy = "Little brown fox"; 
-/only 1 String object is created. Both author and authorCopy point to that
-f(author == authorCopy ) { 
- System.out.println ("referencing the same object" ); 
-} 
-public class FlyWeightW rapper {
-public static void main (String [] args) {
- Integer value1 = Integer .valueOf (5);
- Integer value2 = Integer .valueOf (5);
- //only one object is created
- if (value1 == value2 ) {
- System.out.println ("referencing the same object" );
- }
+**Visual Explanation:**
 
-If you use new Integer(5), a new object will be created every time.
-Both the above examples will print “ referencing the same object “.
+```
+┌─────────────────────────────────────────────────────────────┐
+│         STRING TRIM() OPERATION FLOW                        │
+└─────────────────────────────────────────────────────────────┘
 
----
+Initial State:
+s ──> " Hello " (on heap)
 
-## 🔹 Q8: What is a static factory method, and when will you use it?
+After s.trim() (without assignment):
+s ──> " Hello " (unchanged)
+      
+      "Hello" (new string created, but unreachable)
+      ↓
+      Garbage collected
 
-**Answer:**
-
-The factory method pattern is a way to encapsulate object creation. It has the benefits like
-1. Factory can choose what to return from many subclasses or implementations of an interface. This allows the caller to specify the behavior desired via
-parameters, without having to know or understand a potentially complex class hierarchy. The lesser a caller knows about a callee’ s internal details, the more
-loosely coupled a callee is from the caller .
-2. The factory can apply the fly weight design pattern to cache objects and return cached objects instead of creating a new object every time. In other words,
-objects can be pooled and reused. This is the reason why you should favor using Integer .valuOf(6) as opposed to new Integer(6) .
-3. The factory methods have more meaningful names than the constructors. For example, getInstance( ), valueOf( ), getConnection( ), deepCopy( ), etc.
-
----
-
-## 🔹 Q9: How will you split the following string of text into individual vehicle types?
-“Car,Jeep, W agon Scooter Truck, V an”
-
-**Answer:**
-
-Regular expressions to the rescue.public static List<Car> deepCopy (List<Car> listCars ) {
- List<Car> copiedList = new ArrayList <Car>(10);
- for (Car car : listCars ) { //JDK 1.5 for each loop
- Car carCopied = new Car( ); //instantiate a new Car object
- carCopied .setColor ((car.getColor ( )));
- copiedList .add(carCopied );
- }
- return copiedList ;
+After s = s.trim() (with assignment):
+      " Hello " (becomes unreachable)
+      
+s ──> "Hello" (new trimmed string)
+```
 
 ---
 
-## 🔹 Q10: What are the different ways to concatenate strings? and which approach is most ef ficient?
+## String Pool & Interning
+
+### Q1: What is the difference between "==" and "equals()" in comparing Java String objects?
 
 **Answer:**
+- `==` compares **object references** (memory addresses)
+- `equals()` compares **actual content** (character sequences)
 
-Plus (“+”) operator :
-Using a StringBuilder or StringBuffer class.public class String3 {
- public static void main (String [ ] args) {
- String pattern = "[,\\s]+"; //regex pattern – a comma or white space repeated 1 or more times
- 
- String vehicles = "Car,Jeep, W agon Scooter Truck, V an";
- String [ ] result = vehicles .split(pattern );
- for (String vehicle : result ) {
- System.out.println ("Vehicle = \"" + vehicle + "\"");
- }
- }
-String s1 = ”John ” + “Davies ”;
-StringBuilder sb = new StringBuilder (“John ”);
-sb.append (“Davies ”);
+```java
+public class StringEquals {
+    public static void main(String[] args) {
+        String s1 = "Hello";
+        String s2 = new String("Hello");
+        String s3 = "Hello";
+        
+        System.out.println(s1.equals(s2));  // true (same content)
+        System.out.println(s1 == s2);       // false (different objects)
+        System.out.println(s1 == s3);       // true (same object in pool)
+    }
+}
+```
 
-Using the concat(…) method.
-The ef ficiency depends on what you are concatenating and how you are concatenating it.
-Concatenating constants: Plus operator is more ef ficient than the other two as the JVM optimizes constants.
-Concatenating String variables: Any one of the three methods should do the job.
-Concatenating in a for/while loop: StringBuilder or StringBuf fer is the most ef ficient. Avoid using plus operator as it is the worst of fender .“John ”.concat (“Davies ”);
-String s1 = ”John ” + “Davies ”;
-String s1 = s2 + s3 + s4;
-String s1 = “name =”;
-s1 += name ;
+### String Pool Architecture
 
-Prefer StringBuilder to StringBuf fer unless multiple threads can have access to it.
+```
+┌─────────────────────────────────────────────────────────────┐
+│              STRING POOL ARCHITECTURE                       │
+└─────────────────────────────────────────────────────────────┘
+
+HEAP MEMORY:
+┌───────────────────────────────────────────────────────────┐
+│                                                            │
+│  Regular Heap Objects:                                    │
+│  ┌────────────────────┐                                  │
+│  │ new String("Hello")│  ← s2 points here                │
+│  └────────────────────┘                                  │
+│                                                            │
+│  ┌─────────────────────────────────────────────────────┐ │
+│  │              STRING POOL                            │ │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐         │ │
+│  │  │ "Hello"  │  │ "World"  │  │ "Java"   │         │ │
+│  │  └──────────┘  └──────────┘  └──────────┘         │ │
+│  │       ↑             ↑                               │ │
+│  │       │             │                               │ │
+│  │      s1, s3      (other refs)                       │ │
+│  └─────────────────────────────────────────────────────┘ │
+│                                                            │
+└───────────────────────────────────────────────────────────┘
+
+Key Points:
+• String literals automatically go to pool
+• new String() creates object on regular heap
+• intern() can move strings to pool
+```
+
+### Q2: Can you explain how Strings are interned in Java?
+
+**Answer:** String interning is the process of storing only one copy of each distinct string value in the string pool.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              STRING INTERNING PROCESS                       │
+└─────────────────────────────────────────────────────────────┘
+
+Method: String.intern()
+
+Step 1: Check if string exists in pool
+   ┌─────────────────────┐
+   │ Is "Hello" in pool? │
+   └─────────────────────┘
+            │
+      ┌─────┴─────┐
+      │           │
+     Yes         No
+      │           │
+      ▼           ▼
+   Return      Add to pool
+   existing    and return
+   reference   new reference
+```
+
+**Example:**
+
+```java
+// Creating strings
+String s1 = "A";  // Automatically interned
+String s2 = new String("A");  // Not interned (on heap)
+
+// Before interning
+System.out.println(s1 == s2);  // false (different objects)
+
+// After interning
+s2 = s2.intern();  // Returns reference from pool
+System.out.println(s1 == s2);  // true (same object)
+```
+
+### String Pool Location
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         STRING POOL LOCATION BY JAVA VERSION                │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Java 6 and earlier:                                        │
+│  • String pool in PermGen (fixed size)                      │
+│  • Limited by PermGen size                                  │
+│  • OutOfMemoryError: PermGen space                          │
+│                                                              │
+│  Java 7 and later:                                          │
+│  • String pool moved to Heap                                │
+│  • Dynamic sizing                                           │
+│  • Better memory management                                 │
+│  • Can be garbage collected                                 │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Flyweight Design Pattern
+
+String class implements the **Flyweight pattern** to conserve memory by reusing objects.
+
+```java
+// Example: Only one "Hello" object created
+String s1 = "Hello";
+String s2 = "Hello";
+String s3 = "Hello";
+
+// All three references point to the same object
+System.out.println(s1 == s2);  // true
+System.out.println(s2 == s3);  // true
+System.out.println(s1 == s3);  // true
+```
 
 ---
 
-## 🔹 Q11: Java being a stack based language, allows you to make recursive method calls. Can you write a recursion based solution to count the number of A ’s in
-string “AAA rating”?
+## String vs StringBuffer vs StringBuilder
 
-**Answer:**
+### Q4: What is the main difference between String, StringBuffer, and StringBuilder?
 
-A function is recursive if it calls itself. Given enough stack space, recursive method calls are perfectly valid in Java though it is tough to debug. Recursive
-functions are useful in removing iterations from many sorts of algorithms.
-Recursion in stack based language like JavaStringBuilder sb = new StringBuilder (250);
-for( int i=0; i<SIZE; i++ ) {
- sb.append (“Item:” + i);
+```
+┌──────────────────────────────────────────────────────────────┐
+│      STRING vs STRINGBUFFER vs STRINGBUILDER                 │
+├──────────────┬─────────────┬─────────────┬──────────────────┤
+│  Feature     │   String    │StringBuffer │  StringBuilder   │
+├──────────────┼─────────────┼─────────────┼──────────────────┤
+│  Mutability  │  Immutable  │   Mutable   │    Mutable       │
+│  Thread-Safe │     Yes     │     Yes     │      No          │
+│  Performance │   Slowest   │   Medium    │    Fastest       │
+│  Since       │   Java 1.0  │  Java 1.0   │    Java 1.5      │
+│  Use Case    │  Constants  │Multi-thread │  Single-thread   │
+└──────────────┴─────────────┴─────────────┴──────────────────┘
+```
+
+### Performance Comparison
+
+```java
+// Scenario: Concatenate 10,000 strings
+
+// ❌ SLOWEST: String (creates 10,000 objects!)
+String result = "";
+for (int i = 0; i < 10000; i++) {
+    result += i;  // Creates new String each time
+}
+// Time: ~5000ms
+
+// ✅ MEDIUM: StringBuffer (synchronized)
+StringBuffer sb = new StringBuffer();
+for (int i = 0; i < 10000; i++) {
+    sb.append(i);  // Modifies same object
+}
+String result = sb.toString();
+// Time: ~15ms
+
+// ✅ FASTEST: StringBuilder (not synchronized)
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 10000; i++) {
+    sb.append(i);  // Modifies same object, no sync
+}
+String result = sb.toString();
+// Time: ~5ms
+```
+
+**Visual Performance:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│      CONCATENATION PERFORMANCE (10,000 iterations)          │
+└─────────────────────────────────────────────────────────────┘
+
+String:
+████████████████████████████████████████████████████ 5000ms
+
+StringBuffer:
+███ 15ms
+
+StringBuilder:
+█ 5ms
+
+Ratio: 1000 : 3 : 1
+```
+
+### When to Use Each
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              USAGE GUIDELINES                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Use String when:                                           │
+│  • Value won't change                                       │
+│  • Small number of concatenations                           │
+│  • String literals                                          │
+│  • HashMap/HashSet keys                                     │
+│                                                              │
+│  Use StringBuffer when:                                     │
+│  • Multiple threads access same buffer                      │
+│  • Thread safety required                                   │
+│  • Legacy code (pre-Java 1.5)                               │
+│                                                              │
+│  Use StringBuilder when:                                    │
+│  • Single-threaded environment                              │
+│  • Many concatenations in loop                              │
+│  • Performance critical                                     │
+│  • Local variables (inherently thread-safe)                 │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Internal Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         STRINGBUILDER INTERNAL STRUCTURE                    │
+└─────────────────────────────────────────────────────────────┘
+
+StringBuilder sb = new StringBuilder("Hello");
+
+Internal char array:
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│ H │ e │ l │ l │ o │   │   │   │   │   │   │   │   │   │   │   │
+└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+  
+  count = 5 (current length)
+  capacity = 16 (default initial capacity)
+
+After sb.append(" World"):
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│ H │ e │ l │ l │ o │   │ W │ o │ r │ l │ d │   │   │   │   │   │
+└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+  
+  count = 11
+  capacity = 16 (no resize needed)
+
+If capacity exceeded, array is resized:
+new capacity = (old capacity * 2) + 2
+```
+
+---
+
+## String Comparison
+
+### Comparison Methods
+
+```java
+String s1 = "Hello";
+String s2 = "hello";
+String s3 = "Hello";
+
+// 1. equals() - case-sensitive content comparison
+s1.equals(s3);  // true
+s1.equals(s2);  // false
+
+// 2. equalsIgnoreCase() - case-insensitive
+s1.equalsIgnoreCase(s2);  // true
+
+// 3. compareTo() - lexicographic comparison
+s1.compareTo(s3);  // 0 (equal)
+s1.compareTo(s2);  // negative (s1 < s2 lexicographically)
+"abc".compareTo("xyz");  // negative
+
+// 4. compareToIgnoreCase()
+s1.compareToIgnoreCase(s2);  // 0
+
+// 5. == operator - reference comparison
+s1 == s3;  // true (if both from pool)
+s1 == new String("Hello");  // false (different objects)
+```
+
+### Comparison Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         STRING COMPARISON DECISION TREE                     │
+└─────────────────────────────────────────────────────────────┘
+
+                    Need to compare?
+                          │
+        ┌─────────────────┼─────────────────┐
+        │                 │                 │
+    References?       Content?          Order?
+        │                 │                 │
+        ▼                 ▼                 ▼
+    Use ==          Use equals()      Use compareTo()
+                         │
+                    ┌────┴────┐
+                    │         │
+              Case matters? Case doesn't matter?
+                    │         │
+                    ▼         ▼
+              equals()  equalsIgnoreCase()
+```
+
+---
+
+## String Manipulation
+
+### Q5: Can you write a method that reverses a given String?
+
+**Answer:** Multiple approaches available.
+
+### Approach 1: Using StringBuilder (RECOMMENDED)
+
+```java
+public static String reverse(String input) {
+    if (input == null || input.length() == 0) {
+        return input;
+    }
+    
+    return new StringBuilder(input).reverse().toString();
+}
+```
+
+**Why this is best:**
+- Uses optimized built-in method
+- Handles Unicode surrogate pairs correctly
+- Fast and efficient (uses bit-wise operations)
+- Thread-safe (local variable)
+
+### Approach 2: Recursive Solution
+
+```java
+public String reverse(String str) {
+    // Exit condition
+    if ((null == str) || (str.length() <= 1)) {
+        return str;
+    }
+    
+    // Put first character at end, recurse with rest
+    return reverse(str.substring(1)) + str.charAt(0);
+}
+```
+
+**Recursion Flow:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         RECURSIVE STRING REVERSAL                           │
+└─────────────────────────────────────────────────────────────┘
+
+Input: "RAW"
+
+Step 1: reverse("RAW")
+   ↓
+Step 2: reverse("AW") + "R"
+   ↓
+Step 3: reverse("W") + "A" + "R"
+   ↓
+Step 4: "W" + "A" + "R"  (exit condition reached)
+   ↓
+Output: "WAR"
+
+Call Stack:
+┌──────────────────┐
+│ reverse("W")     │ → returns "W"
+├──────────────────┤
+│ reverse("AW")    │ → returns "WA"
+├──────────────────┤
+│ reverse("RAW")   │ → returns "WAR"
+└──────────────────┘
+```
+
+### Approach 3: Iterative Solution
+
+```java
+public String reverse(String str) {
+    if ((null == str) || (str.length() <= 1)) {
+        return str;
+    }
+    
+    char[] chars = str.toCharArray();
+    int rhsIdx = chars.length - 1;
+    
+    // Swap characters from both ends
+    for (int lhsIdx = 0; lhsIdx < rhsIdx; lhsIdx++) {
+        char temp = chars[lhsIdx];
+        chars[lhsIdx] = chars[rhsIdx];
+        chars[rhsIdx--] = temp;
+    }
+    
+    return new String(chars);
+}
+```
+
+**Iterative Flow:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         ITERATIVE STRING REVERSAL                           │
+└─────────────────────────────────────────────────────────────┘
+
+Input: "HELLO"
+
+Initial:
+┌───┬───┬───┬───┬───┐
+│ H │ E │ L │ L │ O │
+└───┴───┴───┴───┴───┘
+  ↑               ↑
+  lhs            rhs
+
+Iteration 1: Swap H ↔ O
+┌───┬───┬───┬───┬───┐
+│ O │ E │ L │ L │ H │
+└───┴───┴───┴───┴───┘
+      ↑       ↑
+     lhs     rhs
+
+Iteration 2: Swap E ↔ L
+┌───┬───┬───┬───┬───┐
+│ O │ L │ L │ E │ H │
+└───┴───┴───┴───┴───┘
+          ↑
+      lhs=rhs (stop)
+
+Output: "OLLEH"
+```
+
+---
+
+## String Concatenation Performance
+
+### Q10: What are the different ways to concatenate strings? Which approach is most efficient?
+
+### Method 1: Plus (+) Operator
+
+```java
+String s1 = "John " + "Davies";
+```
+
+**When efficient:** Concatenating constants (compiler optimizes)
+
+### Method 2: StringBuilder/StringBuffer
+
+```java
+StringBuilder sb = new StringBuilder("John ");
+sb.append("Davies");
+String result = sb.toString();
+```
+
+**When efficient:** Multiple concatenations, especially in loops
+
+### Method 3: concat() Method
+
+```java
+String result = "John ".concat("Davies");
+```
+
+**When efficient:** Single concatenation of two strings
+
+### Performance Comparison
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│      CONCATENATION PERFORMANCE COMPARISON                   │
+└─────────────────────────────────────────────────────────────┘
+
+Scenario 1: Concatenating Constants
+String s = "John " + "Davies";
+• Compiler optimizes to single string
+• Performance: Excellent
+• Use: Always for constants
+
+Scenario 2: Concatenating Variables
+String s = s2 + s3 + s4;
+• Creates temporary String objects
+• Performance: Good for few concatenations
+• Use: 2-3 concatenations
+
+Scenario 3: Loop Concatenation
+for (int i = 0; i < 1000; i++) {
+    s += i;  // ❌ Creates 1000 String objects!
+}
+• Performance: Very Poor
+• Use: Never in loops!
+
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 1000; i++) {
+    sb.append(i);  // ✅ Modifies same object
+}
+• Performance: Excellent
+• Use: Always in loops
+```
+
+### Real-World Example
+
+```java
+// ❌ INEFFICIENT: String concatenation in loop
+String result = "";
+for (int i = 0; i < 1000; i++) {
+    result += "Item:" + i;
+}
+// Creates ~2000 String objects
+// Time: ~500ms
+
+// ✅ EFFICIENT: StringBuilder
+StringBuilder sb = new StringBuilder(250);
+for (int i = 0; i < 1000; i++) {
+    sb.append("Item:").append(i);
+}
+String result = sb.toString();
+// Creates 1 String object
+// Time: ~2ms
+
+// Performance improvement: 250x faster!
+```
+
+---
+
+## Design Patterns
+
+### Q6-Q8: Design Patterns in String
+
+### Flyweight Pattern
+
+**Purpose:** Conserve memory by reusing objects.
+
+```java
+// Example 1: String literals (automatic flyweight)
+String author = "Little brown fox";
+String authorCopy = "Little brown fox";
+
+if (author == authorCopy) {
+    System.out.println("referencing the same object");  // Prints!
+}
+```
+
+**How it works:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              FLYWEIGHT PATTERN IN STRING                    │
+└─────────────────────────────────────────────────────────────┘
+
+String Pool (Flyweight Pool):
+┌────────────────────────────────────────┐
+│  "Little brown fox"                    │ ← Both references point here
+│  "Hello"                               │
+│  "World"                               │
+└────────────────────────────────────────┘
+     ↑         ↑
+     │         │
+  author   authorCopy
+
+Memory saved: 1 object instead of 2
+```
+
+### Static Factory Method Pattern
+
+**Purpose:** Encapsulate object creation logic.
+
+```java
+// Example: Integer.valueOf() uses flyweight + factory
+Integer value1 = Integer.valueOf(5);
+Integer value2 = Integer.valueOf(5);
+
+if (value1 == value2) {
+    System.out.println("referencing the same object");  // Prints!
 }
 
-Recursion might not be the ef ficient way to code, but recursive functions are shorter, simpler, and easier to read and understand. Recursive functions are very
-handy in working with tree structures and avoiding unsightly nested for loops.
-Bonus Java String Q&A
-Q12. How do you stream a string class in Java 8? ★ ♟
-A12. chars() method.public class RecursiveCall {
- public int countA (String input ) {
- 
- // exit condition – recursive calls must have an exit condition
- if (input == null || input .length ( ) == 0) {
- return 0;
- }
- int count = 0;
- 
- //check first character of the input
- if (input .substring (0, 1).equals ("A")) {
- count = 1;
- }
- 
- //recursive call to evaluate rest of the input
- //(i.e. 2nd character onwards)
- return count + countA (input .substring (1));
- }
- public static void main (String [ ] args) {
- System.out.println (new RecursiveCall ( ).countA ("AAA rating" )); // 3
- }
+// vs new Integer(5) - always creates new object
+Integer value3 = new Integer(5);  // Deprecated
+Integer value4 = new Integer(5);
+System.out.println(value3 == value4);  // false
+```
 
-Q. Does parallel processing as shown below preserve the order?
-A. No.
-Have you completed this unit? Then mark this unit as completed.
- Mark as Completed
-« Previous Unit Next Unit »public static void main (String [] args) {
- "cactus" .chars ().forEach (c -> System.out.println ((char)c));
+**Benefits of Static Factory Methods:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│        STATIC FACTORY METHOD BENEFITS                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Meaningful Names                                     │
+│     • getInstance(), valueOf(), of()                        │
+│     • More descriptive than constructors                    │
+│                                                              │
+│  2. ✅ Object Caching                                       │
+│     • Can return cached objects                             │
+│     • Reduces object creation                               │
+│                                                              │
+│  3. ✅ Subtype Flexibility                                  │
+│     • Can return subclass instances                         │
+│     • Caller doesn't need to know concrete type             │
+│                                                              │
+│  4. ✅ Lazy Initialization                                  │
+│     • Create objects only when needed                       │
+│     • Better resource management                            │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Regular Expressions
+
+### Q9: How will you split the following string into individual vehicle types?
+
+**Input:** `"Car,Jeep, Wagon Scooter Truck, Van"`
+
+**Answer:** Use regular expressions with `split()`.
+
+```java
+public class StringSplit {
+    public static void main(String[] args) {
+        String pattern = "[,\\s]+";  // Comma or whitespace (1+ times)
+        
+        String vehicles = "Car,Jeep, Wagon Scooter Truck, Van";
+        String[] result = vehicles.split(pattern);
+        
+        for (String vehicle : result) {
+            System.out.println("Vehicle = \"" + vehicle + "\"");
+        }
+    }
 }
-public static void main (String [] args) {
- "cactus" .chars ().parallel ().forEach (c -> System.out.println ((char)c));
+```
+
+**Output:**
+```
+Vehicle = "Car"
+Vehicle = "Jeep"
+Vehicle = "Wagon"
+Vehicle = "Scooter"
+Vehicle = "Truck"
+Vehicle = "Van"
+```
+
+### Regular Expression Patterns
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│         COMMON REGEX PATTERNS                                │
+├──────────────────────────────────────────────────────────────┤
+│                                                               │
+│  [,\\s]+     - Comma or whitespace (1 or more)              │
+│  \\d+        - One or more digits                            │
+│  \\w+        - One or more word characters                   │
+│  [a-zA-Z]+   - One or more letters                           │
+│  \\s*        - Zero or more whitespace                       │
+│  ^           - Start of string                               │
+│  $           - End of string                                 │
+│  .           - Any character                                 │
+│  *           - Zero or more                                  │
+│  +           - One or more                                   │
+│  ?           - Zero or one                                   │
+│  {n}         - Exactly n times                               │
+│  {n,}        - n or more times                               │
+│  {n,m}       - Between n and m times                         │
+│                                                               │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### More Examples
+
+```java
+// Email validation
+String email = "user@example.com";
+boolean isValid = email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+
+// Phone number extraction
+String text = "Call me at 123-456-7890";
+Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
+Matcher matcher = pattern.matcher(text);
+if (matcher.find()) {
+    System.out.println("Phone: " + matcher.group());
 }
 
----
-
-
-
-**Source**: Extracted from PDF
-**Last Updated**: 2026-06-03
-
+// Replace all digits
+String text = "Order 123 costs $45.67";
+String result = text.replaceAll("\\d+", "X");
+// Result: "Order X costs $X.X"
+```
 
 ---
 
-## 📚 Related Topics
+## Java 8 String Features
 
-- [Java Overview](../Module%2001%20-%20Java%20Overview/)
-- [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
-- [OOP Concepts](../Module%2006%20-%20OOP%20and%20FP/)
+### Q12: How do you stream a String class in Java 8?
+
+**Answer:** Use the `chars()` method.
+
+```java
+// Example 1: Print each character
+"cactus".chars().forEach(c -> System.out.println((char)c));
+
+// Output:
+// c
+// a
+// c
+// t
+// u
+// s
+```
+
+### String Streaming Operations
+
+```java
+// Count vowels
+long vowelCount = "Hello World"
+    .chars()
+    .filter(c -> "aeiouAEIOU".indexOf(c) != -1)
+    .count();
+// Result: 3
+
+// Convert to uppercase
+String upper = "hello"
+    .chars()
+    .mapToObj(c -> String.valueOf((char)c).toUpperCase())
+    .collect(Collectors.joining());
+// Result: "HELLO"
+
+// Find first non-repeated character
+String input = "swiss";
+Optional<Character> first = input.chars()
+    .mapToObj(c -> (char)c)
+    .filter(c -> input.indexOf(c) == input.lastIndexOf(c))
+    .findFirst();
+// Result: Optional[w]
+```
+
+### Parallel Processing
+
+```java
+// Q: Does parallel processing preserve order?
+// A: No
+
+// Sequential (preserves order)
+"cactus".chars().forEach(c -> System.out.print((char)c));
+// Output: cactus
+
+// Parallel (may not preserve order)
+"cactus".chars().parallel().forEach(c -> System.out.print((char)c));
+// Output: ctacus (or any other order)
+```
 
 ---
 
-## 💡 Key Takeaways
+## Best Practices
 
-Review the questions above and ensure you understand:
-- Core concepts and their practical applications
-- Real-world scenarios and use cases
-- Best practices and common pitfalls
+### 1. Use String Literals
+
+```java
+// ✅ GOOD: Use literals (cached)
+String s = "Hello";
+
+// ❌ BAD: Use new (creates unnecessary object)
+String s = new String("Hello");
+```
+
+### 2. Use StringBuilder in Loops
+
+```java
+// ❌ BAD: String concatenation in loop
+String result = "";
+for (int i = 0; i < 1000; i++) {
+    result += i;
+}
+
+// ✅ GOOD: StringBuilder
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 1000; i++) {
+    sb.append(i);
+}
+String result = sb.toString();
+```
+
+### 3. Use equals() for Comparison
+
+```java
+// ❌ WRONG: Using ==
+String s1 = new String("Hello");
+String s2 = new String("Hello");
+if (s1 == s2) {  // false
+    System.out.println("Equal");
+}
+
+// ✅ CORRECT: Using equals()
+if (s1.equals(s2)) {  // true
+    System.out.println("Equal");
+}
+```
+
+### 4. Handle Null Safely
+
+```java
+// ❌ RISKY: Potential NPE
+String s = null;
+if (s.equals("Hello")) {  // NullPointerException!
+    // ...
+}
+
+// ✅ SAFE: Null check first
+if (s != null && s.equals("Hello")) {
+    // ...
+}
+
+// ✅ BETTER: Constant first
+if ("Hello".equals(s)) {  // No NPE even if s is null
+    // ...
+}
+```
+
+### 5. Use Appropriate String Class
+
+```java
+// ✅ String: For immutable text
+String constant = "Hello";
+
+// ✅ StringBuilder: For mutable text (single-threaded)
+StringBuilder sb = new StringBuilder();
+sb.append("Hello").append(" World");
+
+// ✅ StringBuffer: For mutable text (multi-threaded)
+StringBuffer buffer = new StringBuffer();
+buffer.append("Thread-safe");
+```
 
 ---
 
-**[⬆ Back to Top](#)**
+## Summary
+
+### Key Takeaways
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              STRING CLASS BEST PRACTICES                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ✅ Strings are immutable - operations create new objects   │
+│  ✅ Use string literals for automatic pooling               │
+│  ✅ Use equals() for content comparison, not ==             │
+│  ✅ Use StringBuilder for concatenation in loops            │
+│  ✅ Understand string pool and interning                    │
+│  ✅ Be aware of performance implications                    │
+│  ✅ Use appropriate class (String/StringBuilder/Buffer)     │
+│  ✅ Handle null safely (constant first in equals)           │
+│  ✅ Leverage Java 8 stream operations                       │
+│  ✅ Use regex for complex string operations                 │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Quick Reference
+
+| Operation | Best Choice | Why |
+|-----------|-------------|-----|
+| Constants | String | Immutable, cached |
+| Single concat | + operator | Compiler optimized |
+| Loop concat | StringBuilder | Mutable, fast |
+| Multi-thread | StringBuffer | Thread-safe |
+| Comparison | equals() | Content comparison |
+| Null-safe | "const".equals(var) | No NPE |
+
+### Common Mistakes to Avoid
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           COMMON STRING MISTAKES                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ❌ Using == instead of equals()                            │
+│  ❌ String concatenation in loops                           │
+│  ❌ Creating strings with new keyword                       │
+│  ❌ Not assigning result of immutable operations            │
+│  ❌ Ignoring null checks                                    │
+│  ❌ Using StringBuffer when StringBuilder suffices          │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+**[← Back to Autoboxing & Unboxing](autoboxing-unboxing.md)** | **[Next: Module 03 →](../Module%2003%20-%20Modifiers%20Annotations%20Initializers/README.md)**
+
+**[↑ Back to Module Index](README.md)**

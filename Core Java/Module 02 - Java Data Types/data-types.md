@@ -1,313 +1,898 @@
-# Java Data Types
+# Java Data Types - Complete Guide
 
 > **Module**: Java Data Types  
-> **Topic**: Java Data Types
+> **Difficulty**: Beginner to Intermediate  
+> **Estimated Time**: 2-3 hours
 
 ---
 
 ## 📋 Table of Contents
 
-
-
-- [Q1: How would you go about choosing the right data types for your application?](#q1)
-- [Q2: What are wrapper classes, and why do you need them?](#q2)
-- [Q3: When working with floating-point data types, what are some of the key considerat](#q3)
-- [Q4: What is your understanding of widening versus narrowing conversions of primitive](#q4)
-- [Q5: What are the dangers of explicit casting?](#q5)
-- [Q6: Do you think the following code will throw a compile-time exception? If yes, how](#q6)
-- [Q7: What is the output of the following code snippet?](#q7)
-- [Q8: Can you list some practical applications where the bitwise operations can be app](#q8)
+1. [Introduction to Java Data Types](#introduction-to-java-data-types)
+2. [Primitive Data Types](#primitive-data-types)
+3. [Wrapper Classes](#wrapper-classes)
+4. [Type Conversion & Casting](#type-conversion--casting)
+5. [Floating-Point Considerations](#floating-point-considerations)
+6. [Bitwise Operations](#bitwise-operations)
+7. [Best Practices](#best-practices)
+8. [Common Pitfalls](#common-pitfalls)
 
 ---
 
-## 🔹 Q1: How would you go about choosing the right data types for your application?
+## Introduction to Java Data Types
 
-**Answer:**
+Java is a **strongly typed language**, meaning every variable must have a declared type. This provides type safety and helps catch errors at compile-time.
 
-Java is what is known as a strongly typed language. This means Java only accepts specific values within specific variables or parameters. Some languages,
-such as JavaScript, PHP, and Perl are weakly typed languages.
-1. Know the data limits to pr event any data overflow
-Java primitive data types
-2. Pr efer immutable wrapper objects to primitives.
-Each primitive data type has a corresponding wrapper class like Integer, Long, Character, Float, Double, etc. There are 8 primitive variables and as many
-wrapper objects. In Java 5, additional wrapper classes like AtomicInteger, AtomicLong, AtomicBoolean and AtomicRefer ence were introduced to provide atomic
-operations for addition, increment, and assignment. These additional classes are mutable and cannot be used as a replacement for regular immutable wrapper
-classes.
+### Type System Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  JAVA TYPE SYSTEM                           │
+└─────────────────────────────────────────────────────────────┘
+
+                    Java Types
+                        │
+        ┌───────────────┴───────────────┐
+        │                               │
+   Primitive Types              Reference Types
+        │                               │
+   ┌────┴────┐                    ┌─────┴─────┐
+   │         │                    │           │
+Numeric  Boolean              Classes    Interfaces
+   │                              │
+┌──┴──┐                      ┌────┴────┐
+│     │                      │         │
+Integer Floating          Arrays   Objects
+Types   Point
+```
+
+### Why Data Types Matter
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           IMPORTANCE OF CHOOSING RIGHT DATA TYPES           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Memory Efficiency                                    │
+│     • Smaller types use less memory                         │
+│     • Important for large datasets                          │
+│                                                              │
+│  2. ✅ Performance                                          │
+│     • Primitive types are faster                            │
+│     • Less overhead than objects                            │
+│                                                              │
+│  3. ✅ Precision                                            │
+│     • Choose appropriate precision for calculations         │
+│     • Avoid data loss                                       │
+│                                                              │
+│  4. ✅ Type Safety                                          │
+│     • Compile-time error detection                          │
+│     • Prevents runtime errors                               │
+│                                                              │
+│  5. ✅ Code Clarity                                         │
+│     • Self-documenting code                                 │
+│     • Clear intent                                          │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🔹 Q2: What are wrapper classes, and why do you need them?
+## Primitive Data Types
 
-**Answer:**
+Java has **8 primitive data types** that represent simple values.
 
-The wrapper classes are a good example of the decorator design pattern. They decorate the primitive values, and enhance their behavior by providing
-immutability, atomicity, null checking, etc.
-1) W rapper objects can be initialized to null. This can’ t be done with primitives. Many programmers initialize numbers to 0 or -1 to signify default values, but
-depending on the scenario, this may be incorrect or misleading.nt bad = 2100000000; // Close to int max value.
-ong good = 2100000000L ;
-ong badAgain = 9000000000000000000L; // Close to long max value
-BigInteger goodAgain = BigInteger .valueOf (9000000000000000000L );
+### Complete Overview
 
-2) W rapper objects are very useful for optional data. Databases almost always have a significant fraction of their fields as optional (that is, as possibly NULL).
-In addition, the forms submitted in Web applications can contain optional parameters. Both NULL database fields and missing request parameters naturally map
-to null object references. With primitives, there is no such natural mapping.
-3) W rapper objects will also set the scene for a NullPointerException when something is being used incorrectly, which is much more programmer -friendly as it
-fails fast than some arbitrary exception buried down the line. Preferably, check for null early on in the method and report it immediately where applicable to
-adhere to the fail fast principle.
-4) The wrapper objects are immutable, hence inher ently thr ead-safe. Other threads can only read the values set by the thread that initialized this object.
-5) When you create wrapper objects, use the valueOf( ) static factory method for ef ficiency .
-The second approach is in fact an implementation of the flyweight design pattern.
-Q. When to prefer primitives?
-A. Primitives are faster to create and use than wrapper objects. W rapper objects need to be auto-unboxed before use. Thus there is an extra step for the JVM to
-perform. For example, in order to perform arithmetic on an Integer, it must first be converted to an int before the arithmetic can be performed. In many business
-applications this rarely matters unless you were writing something very number -crunching or profiling indicates that the auto-boxing is a performance or
-memory issue in a particular part of your code as it is executed very frequently .
-Anti-pattern: Watch out for premature-optimization anti-pattern where you are tempted to code for a perceived performance gain and sacrificing good design
-and maintainability .
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    JAVA PRIMITIVE DATA TYPES                         │
+├────────┬──────────┬─────────────────────┬──────────────────────────┤
+│  Type  │   Size   │       Range         │      Default Value       │
+├────────┼──────────┼─────────────────────┼──────────────────────────┤
+│ byte   │  8 bits  │  -128 to 127        │          0               │
+│ short  │ 16 bits  │  -32,768 to 32,767  │          0               │
+│ int    │ 32 bits  │  -2³¹ to 2³¹-1      │          0               │
+│ long   │ 64 bits  │  -2⁶³ to 2⁶³-1      │          0L              │
+│ float  │ 32 bits  │  ±3.4E+38 (7 digits)│          0.0f            │
+│ double │ 64 bits  │  ±1.7E+308(15 digit)│          0.0d            │
+│ char   │ 16 bits  │  0 to 65,535        │          '\u0000'        │
+│ boolean│  1 bit   │  true or false      │          false           │
+└────────┴──────────┴─────────────────────┴──────────────────────────┘
+```
+
+### Memory Layout
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              PRIMITIVE TYPES MEMORY LAYOUT                  │
+└─────────────────────────────────────────────────────────────┘
+
+byte (8 bits):
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 0 │ 1 │ 0 │ 1 │ 1 │ 0 │ 1 │ 0 │  = 90
+└───┴───┴───┴───┴───┴───┴───┴───┘
+
+short (16 bits):
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 1 │ 0 │ 1 │ 1 │ 0 │ 1 │ 0 │
+└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+                                    = 90
+
+int (32 bits):
+┌────────────────┬────────────────┬────────────────┬────────────────┐
+│   00000000     │   00000000     │   00000000     │   01011010     │
+└────────────────┴────────────────┴────────────────┴────────────────┘
+                                                    = 90
+
+long (64 bits):
+┌────────────────────────────────┬────────────────────────────────┐
+│         32 bits (0s)           │         32 bits (90)           │
+└────────────────────────────────┴────────────────────────────────┘
+```
+
+### Detailed Type Descriptions
+
+#### 1. **Integer Types**
+
+```java
+// byte: -128 to 127 (8 bits)
+byte age = 25;
+byte temperature = -10;
+
+// short: -32,768 to 32,767 (16 bits)
+short year = 2024;
+short altitude = -500;
+
+// int: -2,147,483,648 to 2,147,483,647 (32 bits)
+int population = 1000000;
+int distance = -50000;
+
+// long: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (64 bits)
+long worldPopulation = 7800000000L;  // Note the 'L' suffix
+long nationalDebt = 28000000000000L;
+```
+
+**When to Use Each:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           INTEGER TYPE SELECTION GUIDE                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  byte:                                                      │
+│  • Small numbers (-128 to 127)                              │
+│  • Array indices for small arrays                           │
+│  • Flags and status codes                                   │
+│  • Memory-critical applications                             │
+│                                                              │
+│  short:                                                     │
+│  • Medium-range numbers                                     │
+│  • Year values                                              │
+│  • Port numbers                                             │
+│  • Rarely used in modern Java                               │
+│                                                              │
+│  int: (MOST COMMON)                                         │
+│  • Default choice for integers                              │
+│  • Loop counters                                            │
+│  • Array sizes                                              │
+│  • Most calculations                                        │
+│                                                              │
+│  long:                                                      │
+│  • Very large numbers                                       │
+│  • Timestamps (milliseconds since epoch)                    │
+│  • File sizes                                               │
+│  • Database IDs                                             │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 2. **Floating-Point Types**
+
+```java
+// float: 32-bit IEEE 754 floating point
+float price = 19.99f;  // Note the 'f' suffix
+float pi = 3.14159f;
+
+// double: 64-bit IEEE 754 floating point (DEFAULT)
+double precisePrice = 19.99;
+double scientificValue = 1.23e-4;  // 0.000123
+```
+
+**Precision Comparison:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         FLOATING-POINT PRECISION                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  float (32-bit):                                            │
+│  • ~7 decimal digits of precision                           │
+│  • Range: ±3.4 × 10³⁸                                       │
+│  • Example: 3.1415927                                       │
+│                                                              │
+│  double (64-bit):                                           │
+│  • ~15 decimal digits of precision                          │
+│  • Range: ±1.7 × 10³⁰⁸                                      │
+│  • Example: 3.141592653589793                               │
+│                                                              │
+│  Recommendation: Use double for most calculations           │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 3. **Character Type**
+
+```java
+// char: 16-bit Unicode character
+char letter = 'A';
+char digit = '5';
+char symbol = '$';
+char unicode = '\u0041';  // 'A' in Unicode
+char newline = '\n';
+char tab = '\t';
+```
+
+**Character Encoding:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              CHAR TYPE DETAILS                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Size: 16 bits (2 bytes)                                    │
+│  Range: 0 to 65,535 (unsigned)                              │
+│  Encoding: UTF-16                                           │
+│                                                              │
+│  Common Escape Sequences:                                   │
+│  • \n  - Newline                                            │
+│  • \t  - Tab                                                │
+│  • \r  - Carriage return                                    │
+│  • \\  - Backslash                                          │
+│  • \'  - Single quote                                       │
+│  • \"  - Double quote                                       │
+│  • \uXXXX - Unicode character                               │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 4. **Boolean Type**
+
+```java
+// boolean: true or false
+boolean isActive = true;
+boolean hasPermission = false;
+boolean isValid = (age >= 18);
+```
 
 ---
 
-## 🔹 Q3: When working with floating-point data types, what are some of the key considerations?
+## Wrapper Classes
 
-**Answer:**
+Every primitive type has a corresponding **wrapper class** that provides object-oriented features.
 
-1. Never compare float or double with “==” or != operatornteger i2 = new Integer (5); //first approach is okay
-nteger i1 = Integer .valueOf (5); //2nd approach is more ef ficient
+### Wrapper Class Hierarchy
 
-2. Use long, int, or B i g D e c i m a l for storing money, and performing monetary calculations.
-Floating point data types like float, double, Float, or Double can result in inaccurate results. use either the BigDecimal or int/long representing the value in its
-lowest units like cents.
+```
+┌─────────────────────────────────────────────────────────────┐
+│              WRAPPER CLASS HIERARCHY                        │
+└─────────────────────────────────────────────────────────────┘
+
+                    Object
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+     Number       Character      Boolean
+        │
+   ┌────┼────┬────┬────┬────┐
+   │    │    │    │    │    │
+ Byte Short Int Long Float Double
+```
+
+### Primitive to Wrapper Mapping
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│         PRIMITIVE vs WRAPPER CLASSES                         │
+├─────────────┬────────────────┬──────────────────────────────┤
+│  Primitive  │  Wrapper Class │      Package                 │
+├─────────────┼────────────────┼──────────────────────────────┤
+│  byte       │  Byte          │  java.lang.Byte              │
+│  short      │  Short         │  java.lang.Short             │
+│  int        │  Integer       │  java.lang.Integer           │
+│  long       │  Long          │  java.lang.Long              │
+│  float      │  Float         │  java.lang.Float             │
+│  double     │  Double        │  java.lang.Double            │
+│  char       │  Character     │  java.lang.Character         │
+│  boolean    │  Boolean       │  java.lang.Boolean           │
+└─────────────┴────────────────┴──────────────────────────────┘
+```
+
+### Why Use Wrapper Classes?
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           BENEFITS OF WRAPPER CLASSES                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Null Values                                          │
+│     Integer age = null;  // Possible                        │
+│     int age = null;      // Compile error                   │
+│                                                              │
+│  2. ✅ Collections                                          │
+│     List<Integer> numbers = new ArrayList<>();              │
+│     // Collections require objects, not primitives          │
+│                                                              │
+│  3. ✅ Utility Methods                                      │
+│     int value = Integer.parseInt("123");                    │
+│     String hex = Integer.toHexString(255);                  │
+│                                                              │
+│  4. ✅ Immutability                                         │
+│     • Thread-safe by design                                 │
+│     • Cannot be modified after creation                     │
+│                                                              │
+│  5. ✅ Constants                                            │
+│     Integer.MAX_VALUE, Integer.MIN_VALUE                    │
+│     Double.NaN, Double.POSITIVE_INFINITY                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Creating Wrapper Objects
+
+```java
+// Method 1: Constructor (Deprecated in Java 9+)
+Integer num1 = new Integer(10);  // Don't use
+
+// Method 2: valueOf() - RECOMMENDED
+Integer num2 = Integer.valueOf(10);  // Best practice
+
+// Method 3: Autoboxing (Automatic conversion)
+Integer num3 = 10;  // Compiler converts to Integer.valueOf(10)
+
+// Comparison
+Integer a = Integer.valueOf(100);  // Cached
+Integer b = Integer.valueOf(100);  // Returns same object
+System.out.println(a == b);  // true (same object)
+
+Integer c = Integer.valueOf(200);  // Not cached
+Integer d = Integer.valueOf(200);  // New object
+System.out.println(c == d);  // false (different objects)
+```
+
+### Integer Caching
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              INTEGER CACHING MECHANISM                      │
+└─────────────────────────────────────────────────────────────┘
+
+valueOf() Method Behavior:
+
+For values -128 to 127:
+┌──────────────────────────────────────┐
+│     Integer Cache Pool               │
+│  ┌────┬────┬────┬───┬────┬────┐    │
+│  │-128│-127│... │ 0 │... │127 │    │
+│  └────┴────┴────┴───┴────┴────┘    │
+│         Reused Objects               │
+└──────────────────────────────────────┘
+        ↓
+Integer.valueOf(50) → Returns cached object
+Integer.valueOf(50) → Returns SAME cached object
+
+For values outside -128 to 127:
+┌──────────────────────────────────────┐
+│     Heap Memory                      │
+│  ┌────────┐  ┌────────┐            │
+│  │ New    │  │ New    │            │
+│  │ Object │  │ Object │            │
+│  └────────┘  └────────┘            │
+└──────────────────────────────────────┘
+        ↓
+Integer.valueOf(200) → Creates new object
+Integer.valueOf(200) → Creates ANOTHER new object
+```
+
+### Wrapper Class Utility Methods
+
+```java
+// Parsing Strings
+int num = Integer.parseInt("123");
+double price = Double.parseDouble("19.99");
+boolean flag = Boolean.parseBoolean("true");
+
+// Converting to String
+String str1 = Integer.toString(123);
+String str2 = String.valueOf(123);  // Preferred
+
+// Comparing Values
+Integer a = 100;
+Integer b = 200;
+int result = a.compareTo(b);  // Returns -1 (a < b)
+
+// Min/Max Values
+System.out.println(Integer.MAX_VALUE);  // 2147483647
+System.out.println(Integer.MIN_VALUE);  // -2147483648
+System.out.println(Double.MAX_VALUE);   // 1.7976931348623157E308
+
+// Type Conversion
+Integer num = 42;
+long longValue = num.longValue();
+double doubleValue = num.doubleValue();
+byte byteValue = num.byteValue();
+```
 
 ---
 
-## 🔹 Q4: What is your understanding of widening versus narrowing conversions of primitive data types?
+## Type Conversion & Casting
 
-**Answer:**
+### Widening vs Narrowing Conversion
 
-Left to right (e.g. byte to short) is a widening conversion and considered safe because there is no chance for data loss. For example, byte has a range
-between -128 and 127 and short has a wider range between -32768 and 32767. So when you go from left to right, the data types are implicitly cast by the
-compiler since it is safe to do so.
-Java primitive data types/endless loop -- don't compare float or double for == or !=
-for (float f = 5f; f != 10.0; f += 0.1) {
- System.out.println (f);
+```
+┌─────────────────────────────────────────────────────────────┐
+│           TYPE CONVERSION HIERARCHY                         │
+└─────────────────────────────────────────────────────────────┘
+
+Widening (Implicit - Safe):
+byte → short → int → long → float → double
+  ↓      ↓      ↓     ↓       ↓       ↓
+ 8bit  16bit  32bit 64bit   32bit   64bit
+
+Narrowing (Explicit - Risky):
+double → float → long → int → short → byte
+   ↓       ↓      ↓     ↓      ↓       ↓
+ Loss of precision possible
+```
+
+### Widening Conversion (Automatic)
+
+```java
+// Widening - No data loss, automatic
+byte b = 10;
+short s = b;    // byte → short (automatic)
+int i = s;      // short → int (automatic)
+long l = i;     // int → long (automatic)
+float f = l;    // long → float (automatic)
+double d = f;   // float → double (automatic)
+
+// Data Flow
+byte(10) → short(10) → int(10) → long(10) → float(10.0) → double(10.0)
+```
+
+### Narrowing Conversion (Explicit Cast Required)
+
+```java
+// Narrowing - Potential data loss, requires cast
+double d = 100.99;
+float f = (float) d;   // double → float
+long l = (long) f;     // float → long (loses decimal)
+int i = (int) l;       // long → int
+short s = (short) i;   // int → short
+byte b = (byte) s;     // short → byte
+
+// Data Flow with Loss
+double(100.99) → float(100.99) → long(100) → int(100) → short(100) → byte(100)
+                                      ↑
+                                 Decimal lost
+```
+
+### Casting Dangers
+
+```java
+// Example 1: Overflow
+int largeInt = 130;
+byte smallByte = (byte) largeInt;
+System.out.println(smallByte);  // -126 (overflow!)
+
+// Why? byte range: -128 to 127
+// 130 in binary: 10000010
+// Interpreted as signed byte: -126
+
+// Example 2: Precision Loss
+double precise = 123.456789;
+float lessPrec = (float) precise;
+System.out.println(lessPrec);  // 123.45679 (precision lost)
+
+// Example 3: Truncation
+double decimal = 99.99;
+int whole = (int) decimal;
+System.out.println(whole);  // 99 (decimal part lost)
+```
+
+### Type Conversion Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           TYPE CONVERSION DECISION TREE                     │
+└─────────────────────────────────────────────────────────────┘
+
+                    Start
+                      │
+                      ▼
+            ┌─────────────────────┐
+            │ Source Type Smaller │
+            │ than Target Type?   │
+            └─────────────────────┘
+                 │         │
+            Yes  │         │  No
+                 ▼         ▼
+        ┌──────────────┐  ┌──────────────┐
+        │  Widening    │  │  Narrowing   │
+        │  Conversion  │  │  Conversion  │
+        └──────────────┘  └──────────────┘
+                 │                │
+                 ▼                ▼
+        ┌──────────────┐  ┌──────────────┐
+        │  Automatic   │  │  Explicit    │
+        │  No Cast     │  │  Cast Needed │
+        │  Safe        │  │  Risky       │
+        └──────────────┘  └──────────────┘
+                 │                │
+                 ▼                ▼
+        ┌──────────────┐  ┌──────────────┐
+        │  No Data     │  │  Possible    │
+        │  Loss        │  │  Data Loss   │
+        └──────────────┘  └──────────────┘
+```
+
+---
+
+## Floating-Point Considerations
+
+### The Floating-Point Problem
+
+```java
+// Problem: Precision Issues
+double a = 0.1;
+double b = 0.2;
+double sum = a + b;
+System.out.println(sum);  // 0.30000000000000004 (NOT 0.3!)
+
+// Why? Binary representation cannot exactly represent 0.1
+```
+
+### Binary Representation Issue
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         WHY FLOATING-POINT IS IMPRECISE                     │
+└─────────────────────────────────────────────────────────────┘
+
+Decimal 0.1 in Binary:
+0.1₁₀ = 0.0001100110011001100110011... (repeating)
+         ↑
+    Cannot be exactly represented in finite bits!
+
+Similar to how 1/3 in decimal:
+0.333333... (repeating forever)
+
+Result: Rounding errors accumulate in calculations
+```
+
+### Never Compare Floats with ==
+
+```java
+// ❌ WRONG: Never do this
+double x = 0.1 + 0.2;
+if (x == 0.3) {  // Will be false!
+    System.out.println("Equal");
 }
-private void calculateT otalAccurately1 (float unitCost, int itemCount ){
- BigDecimal total = BigDecimal .ZERO ;
- //use the right constructor
- BigDecimal uc = new BigDecimal (String .valueOf (unitCost ));
- BigDecimal ic= new BigDecimal (String .valueOf (itemCount ));
- total = uc.multiply (ic);
- 
- total = total.setScale (2, RoundingMode .HALF_EVEN );
- System.out.println ("Total3 --> " + total); // 30.00 – good
 
-Right to left (e.g. short to byte) is a narrowing conversion and considered unsafe because there is a chance for data loss. So when you go from right to left, the
-compiler expects you to explicitly cast the data to clearly state that it is safe to do so. If you do not cast explicitly, you will get a compile-time error. For
-example,
-byte b = 0; // valid values are -128 to 127
-hort s = 0; // valid values are -32768 to 32767
-nt i = 0; // valid values are -2147483648 to 2147483647.
-ong l = 0L; // valid values are -9223372036854775808 to 9223372036854775807
- 
-float f = 0.0F; // valid values are 1.4E-45 to 3.4028235E38 
-double d = 0.0; // valid values are 4.9E-324 to 1.7976931348623157E308 
-b = 30; // okay (30 is of type int, but within the byte range)
-b = 128; // Not okay (128 is of type int, but is outside the byte range)
- = b; // okay: short is wider than byte.
-= s; // okay: int is wider than short.
-= i; // okay: long is wider than int.
-**
-* compile-time errors
-**/
-c = s; // Not okay: type char is unsigned & type short is signed.
-b = i; // Not okay: type int is wider than byte
-= l; // Not okay: type long is wider than int 
-= f; // Not okay: type float is wider than long 
-f= d; // Not okay: type double is wider than float
-**
-* fix above compile-time errors with explicit casting.
-**/
-c = (char)s; 
-b = (byte) i;
-= (int) l;
-= (long) f;
-f= (float) d;
+// ✅ CORRECT: Use epsilon comparison
+double epsilon = 0.0001;
+if (Math.abs(x - 0.3) < epsilon) {
+    System.out.println("Equal enough");
+}
 
-Note: byte and short are signed data types and they cannot be implicitly cast to unsigned char data type even though it is a widening conversion.
+// ✅ BETTER: Use BigDecimal for precision
+import java.math.BigDecimal;
 
----
+BigDecimal a = new BigDecimal("0.1");
+BigDecimal b = new BigDecimal("0.2");
+BigDecimal sum = a.add(b);
+System.out.println(sum);  // Exactly 0.3
+```
 
-## 🔹 Q5: What are the dangers of explicit casting?
+### Infinite Loop Danger
 
-**Answer:**
+```java
+// ❌ DANGER: Infinite loop with float
+for (float f = 5.0f; f != 10.0f; f += 0.1f) {
+    System.out.println(f);
+    // May never reach exactly 10.0 due to rounding errors!
+}
 
-Not knowing the MIN and MAX values can result in unexpected results due to loss of data during narrowing.
-Trap #1 Be car eful when casting explicitly .
-Trap #2: Simple binary operations apply ‘binary numeric pr omotions’
-The binary numeric pr omotion rule automatically casts each operand to the size of the larger operand type. If neither operand is larger, then both are cast to
-the same type. In byte b = b + 10, the value 10 is of type int and is the larger operand type compared to b, which is of type byte, hence will be evaluated as
-follows:
-Above code throws a compile time error because b+10 evaluates to an int. You need an explicit cast to convert an int to byte as it is a narr owing conversion .nt iWithinByteRange = 125;
-nt iOutsideByteRangeMax = 129;
-byte bGood = (byte) iWithinByteRange ;
-System.out.println ("bOkay=" + bGood ); // 125 – good
-byte bBad = (byte) iOutsideByteRangeMax ;
-System.out.println ("Trap #1 - bBad=" + bBad ); // -127 – bad
-byte b = (int)b + 10;
+// ✅ SAFE: Use integer loop
+for (int i = 50; i != 100; i++) {
+    float f = i / 10.0f;
+    System.out.println(f);
+}
+```
 
-Trap #3: Compound Operators, such as +=, -=, etc contain an explicit cast
-In byte b+=10 compound binary operation, you may be thinking that b+=10 will be expanded as b = b + 10. But it is really not correct. This is because the
-compound operations will have an explicit cast in the converted byte code.
-performing a compound assignment operation (e.g. +=, -=, *=, etc). You may be thinking that b+=10 will be expanded as b = b + 10. But it is really not correct.
-This is because the compound operations will have an explicit cast even though it is not shown in the code.
+### Money Calculations
+
+```java
+// ❌ WRONG: Using double for money
+double price = 0.1;
+double quantity = 3;
+double total = price * quantity;
+System.out.println(total);  // 0.30000000000000004
+
+// ✅ CORRECT: Use BigDecimal
+import java.math.BigDecimal;
+
+BigDecimal price = new BigDecimal("0.10");
+BigDecimal quantity = new BigDecimal("3");
+BigDecimal total = price.multiply(quantity);
+System.out.println(total);  // Exactly 0.30
+
+// ✅ ALTERNATIVE: Use cents (int/long)
+int priceInCents = 10;  // $0.10
+int quantity = 3;
+int totalInCents = priceInCents * quantity;  // 30 cents
+double totalInDollars = totalInCents / 100.0;  // $0.30
+```
 
 ---
 
-## 🔹 Q6: Do you think the following code will throw a compile-time exception? If yes, how will you fix it?
+## Bitwise Operations
 
-**Answer:**
+### Bitwise Operators
 
-Yes. It is cast first and then divided as casting operator has precedence over division operator as per the precedence table. So the above code is equivalent to
-To fix it, you need to get the division operator to evaluate prior to casting. You can achieve this by introducing a parenthesis around the division as parenthesis
-has higher precedence (in fact highest) than casting as per the precedence table.byte b = (byte) (b + 10);
-float myV al = (float)3.0/2.0;
-float myV al = 3.0f/2.0; // float divided by double returns a double
- //as per the "binary numeric promotion" principle
+```
+┌──────────────────────────────────────────────────────────────┐
+│              BITWISE OPERATORS                               │
+├──────────┬───────────────────────────────────────────────────┤
+│ Operator │ Description                                       │
+├──────────┼───────────────────────────────────────────────────┤
+│    &     │ AND - Both bits must be 1                        │
+│    |     │ OR - At least one bit must be 1                  │
+│    ^     │ XOR - Bits must be different                     │
+│    ~     │ NOT - Inverts all bits                           │
+│   <<     │ Left shift - Multiply by 2ⁿ                      │
+│   >>     │ Right shift - Divide by 2ⁿ (signed)             │
+│   >>>    │ Unsigned right shift - Fill with zeros           │
+└──────────┴───────────────────────────────────────────────────┘
+```
 
----
+### Bitwise Operations Examples
 
-## 🔹 Q7: What is the output of the following code snippet?
+```java
+// AND (&) - Both bits must be 1
+int a = 12;  // 1100 in binary
+int b = 10;  // 1010 in binary
+int result = a & b;  // 1000 = 8
 
-**Answer:**
+/*
+    1100  (12)
+  & 1010  (10)
+  ------
+    1000  (8)
+*/
 
-x=6, y=7, z=6
-line 1: x=5, y=0, z=0
-line 2: x=6, y=6, z=0;
-line 3: x=6, y=7, z=6
-You need to understand the pre and post increment operators to get this right. ++x is a pre-increment and x++ is a post increment. ++x means x is incremented
-before being used and x++ means x is incremented after being used. So line2 increments x by one and then assign it to y. Whereas in line 3, z is assigned the old
-y value (i.e. prior to incrementing) of 6 and then y value is incremented to 7.
-As you may rightly ask that as per the precedence table, both pre-increment (i.e. ++expr) and post-increment (i.e. expr++) operators do have precedence over the
-assignment operator (i.e “=”). The line 3 int z = y++; is roughly evaluated as follows:float myV al = (float)(3.0/2.0); // double divided by double returns a 
- // double and it is then explicitly
- // cast to float to return a float value.
-public class PrePostOperators {
- public static void main (String [ ] args) {
- int x = 5; // line 1
- int y = ++x; // line 2
- int z = y++; // line 3
- 
- System.out.println ("x=" + x + ", y=" + y + ", z=" + z);
- }
+// OR (|) - At least one bit must be 1
+result = a | b;  // 1110 = 14
 
----
+/*
+    1100  (12)
+  | 1010  (10)
+  ------
+    1110  (14)
+*/
 
-## 🔹 Q8: Can you list some practical applications where the bitwise operations can be applied?
+// XOR (^) - Bits must be different
+result = a ^ b;  // 0110 = 6
 
-**Answer:**
+/*
+    1100  (12)
+  ^ 1010  (10)
+  ------
+    0110  (6)
+*/
 
-Example 1: To pack and unpack values.
-For example, to represent
-age of a person in the range of 0 to 127. Use 7 bits.
-gender of a person 0 or 1 (0 – female and 1 – male). Use 1 bit.
-height of a person in the range of 0 to 255. Use 8 bits.
-To pack this info: (((age << 1) | gender ) << 8 ) | height. For example, age = 25, gender = 1, and height = 255cm. Shift the age by 1 bit, and combine it with
-gender, and then shift the age and gender by 8 bits and combine it with the height.
-nt oldY = 6; // current value of y is used by storing it to a variable 
-y = y+ 1; // increment y by 1 to 7
-z = oldY; // z is set to the stored oldY value of 6
+// NOT (~) - Inverts all bits
+result = ~a;  // -13 (two's complement)
 
-Bitwise operations
-public class Binary {
- public static void main (String [ ] args) {
- 
- //packing
- int val = ((((25 << 1) | 1) << 8) | 255);
- System.out.println ("packed=" + val);
- System.out.println ("packed binary="
- + Integer .toBinaryString (val)); //001 1001 111111111
+// Left Shift (<<) - Multiply by 2
+int x = 5;  // 0101
+result = x << 1;  // 1010 = 10 (5 * 2)
+result = x << 2;  // 10100 = 20 (5 * 4)
 
-Output:
-packed=1331 1
-packed binary=1 1001 111111111
-height=255
-gender=1
-age=25 
- //unpacking
- System.out.println ("height=" + (val & 0xf f)); //extract last 8 bits.
- System.out.println ("gender=" + ((val >>> 8) & 1)); //extract bit 9
- System.out.println ("age=" + ((val >>> 9))); //extract bits 10 – 16.
- }
+// Right Shift (>>) - Divide by 2
+result = x >> 1;  // 0010 = 2 (5 / 2)
+```
 
-Example 2: To compactly represent a number of attributes like being bold, italics, etc of a character in a text editor.
-This is a more practical example.
-mport java.util.Arrays ;
-public class Binary6 {
- public static void main (String [ ] args) {
- byte[ ] vals = { 0, 1, 0, 1, 0, 0, 0, 1 };
- byte value = pack (vals);
- System.out.println ("packedV alue=" + value ); // 81
- System.out.println ("unpackedV alues="
- + Arrays .toString (unpack (value ))); // [0, 1, 0, 1, 0, 0, 0, 1]
- }
- public static byte pack (byte[ ] vals) {
- byte result = 0;
- for (byte bit : vals) {
- result = (byte) ((result << 1) | (bit & 1));
- }
- return result ;
- }
- public static byte[ ] unpack (byte val) {
- byte[ ] result = new byte[8];
- for (int i = 0; i < 8; i++) {
- result [i] = (byte) ((val >> (7 - i)) & 1);
- }
- return result ;
- }
+### Practical Applications
 
-Example 3: If you can think of anything as slots or switches that need to be flagged on or off,
-you can think of bitwise operators. For example, if you want to mark some events on a calendar .
-Example 4: To multiply or divide by 2n
-Have you completed this unit? Then mark this unit as completed.
- Mark as Completed
-« Previous Unit Next Unit »public class ShiftOperator {
- 
- //multiply 10 by 2 power n where n = 6
- private static final int MUL TIPL Y = 10 << 6;
- 
- //Divide 640 by 2 power n where n = 6.
- private static final int DIVIDE = 640 >> 6;
- 
- public static void main (String [ ] args) {
- System.out.println (MUL TIPL Y); // 640
- System.out.println (DIVIDE ); // 10
- }
+```java
+// 1. Checking if number is even/odd
+boolean isEven = (num & 1) == 0;
+boolean isOdd = (num & 1) == 1;
+
+// 2. Multiplying/Dividing by powers of 2
+int doubled = num << 1;   // num * 2
+int quadrupled = num << 2;  // num * 4
+int halved = num >> 1;    // num / 2
+
+// 3. Swapping without temp variable
+int a = 5, b = 10;
+a = a ^ b;
+b = a ^ b;  // b = (a ^ b) ^ b = a
+a = a ^ b;  // a = (a ^ b) ^ a = b
+
+// 4. Setting/Clearing/Toggling bits
+int flags = 0;
+flags |= (1 << 2);   // Set bit 2
+flags &= ~(1 << 2);  // Clear bit 2
+flags ^= (1 << 2);   // Toggle bit 2
+
+// 5. Checking if power of 2
+boolean isPowerOf2 = (num & (num - 1)) == 0 && num != 0;
+```
 
 ---
 
+## Best Practices
 
+### 1. Choosing Data Types
 
-**Source**: Extracted from PDF
-**Last Updated**: 2026-06-03
+```java
+// ✅ GOOD: Use appropriate types
+int age = 25;              // int for most integers
+long timestamp = System.currentTimeMillis();  // long for timestamps
+double price = 19.99;      // double for decimals
+BigDecimal money = new BigDecimal("19.99");  // BigDecimal for money
 
+// ❌ BAD: Using wrong types
+byte age = 25;             // Unnecessary restriction
+float price = 19.99f;      // Less precision than double
+double money = 19.99;      // Precision issues for money
+```
+
+### 2. Wrapper vs Primitive
+
+```java
+// ✅ GOOD: Use primitives for performance-critical code
+for (int i = 0; i < 1000000; i++) {
+    int sum = i + i;  // Fast
+}
+
+// ✅ GOOD: Use wrappers when null is needed
+Integer userId = getUserId();  // Can be null
+if (userId != null) {
+    // Process user
+}
+
+// ❌ BAD: Unnecessary autoboxing in loops
+for (Integer i = 0; i < 1000000; i++) {  // Slow!
+    Integer sum = i + i;  // Creates many objects
+}
+```
+
+### 3. valueOf() vs Constructor
+
+```java
+// ✅ GOOD: Use valueOf() for caching
+Integer num = Integer.valueOf(100);  // Cached
+
+// ❌ BAD: Using constructor (deprecated)
+Integer num = new Integer(100);  // Always creates new object
+```
+
+### 4. Comparing Wrapper Objects
+
+```java
+// ❌ WRONG: Using == for wrapper objects
+Integer a = 200;
+Integer b = 200;
+if (a == b) {  // false! (different objects)
+    System.out.println("Equal");
+}
+
+// ✅ CORRECT: Using equals()
+if (a.equals(b)) {  // true
+    System.out.println("Equal");
+}
+
+// ✅ ALTERNATIVE: Unbox to primitive
+if (a.intValue() == b.intValue()) {  // true
+    System.out.println("Equal");
+}
+```
 
 ---
 
-## 📚 Related Topics
+## Common Pitfalls
 
-- [Java Overview](../Module%2001%20-%20Java%20Overview/)
-- [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
-- [OOP Concepts](../Module%2006%20-%20OOP%20and%20FP/)
+### 1. Integer Overflow
+
+```java
+// Problem
+int max = Integer.MAX_VALUE;
+int overflow = max + 1;
+System.out.println(overflow);  // -2147483648 (wraps around!)
+
+// Solution
+long result = (long) max + 1;  // Cast to long first
+System.out.println(result);  // 2147483648
+```
+
+### 2. Floating-Point Comparison
+
+```java
+// Problem
+double a = 0.1 + 0.2;
+if (a == 0.3) {  // false!
+    System.out.println("Equal");
+}
+
+// Solution
+double epsilon = 0.0001;
+if (Math.abs(a - 0.3) < epsilon) {  // true
+    System.out.println("Equal");
+}
+```
+
+### 3. Null Pointer with Autoboxing
+
+```java
+// Problem
+Integer num = null;
+int primitive = num;  // NullPointerException!
+
+// Solution
+Integer num = null;
+int primitive = (num != null) ? num : 0;  // Safe
+```
+
+### 4. Loss of Precision
+
+```java
+// Problem
+long bigNumber = 123456789012345L;
+float f = bigNumber;  // Loss of precision
+System.out.println((long) f);  // Not the same!
+
+// Solution
+// Use double or BigDecimal for large precise numbers
+double d = bigNumber;  // Better precision
+BigDecimal bd = BigDecimal.valueOf(bigNumber);  // Exact
+```
 
 ---
 
-## 💡 Key Takeaways
+## Summary
 
-Review the questions above and ensure you understand:
-- Core concepts and their practical applications
-- Real-world scenarios and use cases
-- Best practices and common pitfalls
+### Key Takeaways
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              DATA TYPES BEST PRACTICES                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ✅ Use int for most integer calculations                   │
+│  ✅ Use long for timestamps and large numbers               │
+│  ✅ Use double for floating-point (not float)               │
+│  ✅ Use BigDecimal for money calculations                   │
+│  ✅ Use wrapper classes when null is needed                 │
+│  ✅ Use valueOf() instead of constructors                   │
+│  ✅ Never compare floats with ==                            │
+│  ✅ Be aware of integer overflow                            │
+│  ✅ Use equals() for wrapper object comparison              │
+│  ✅ Understand widening vs narrowing conversions            │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Next Steps
+
+1. ✅ Understand primitive types and their ranges
+2. ✅ Master wrapper classes and their usage
+3. ➡️ Learn [Primitives & Memory](primitives-memory.md)
+4. ➡️ Study [Autoboxing & Unboxing](autoboxing-unboxing.md)
+5. ➡️ Explore [String Class](string-class.md)
 
 ---
 
-**[⬆ Back to Top](#)**
+**[← Back to Module Index](README.md)** | **[Next: Primitives & Memory →](primitives-memory.md)**

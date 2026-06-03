@@ -1,534 +1,1683 @@
 # Java Annotations
 
 > **Module**: Modifiers Annotations Initializers  
-> **Topic**: Java Annotations
+> **Topic**: Built-in and Custom Annotations
 
 ---
 
 ## 📋 Table of Contents
 
-
-
-- [Q1: Are annotations a compile time or run-time feature?](#q1)
-- [Q2: Are marker or tag interfaces like Serializable, Runnable, etc obsolete with the ](#q2)
-- [Q3: What is an annotation, and why are they so popular and used in every framework l](#q3)
-- [Q4: How will you go about defining a custom annotation? Can you give a practical exa](#q4)
-- [Q5: What are some of the JAX-RS (i.e RESTful) web service annotations?](#q5)
-- [Q6: What are some of the widely used Spring annotations?](#q6)
-- [Q7: What are some of the widely used JEE CDI annotations?](#q7)
-- [Q8: How would you unit test CDI with JUnit?](#q8)
-- [Q9: In Servlet 3.0, why is configuring your servlet via deployment descriptor file w](#q9)
-
----
-
-## 🔹 Q1: Are annotations a compile time or run-time feature?
-
-**Answer:**
-
-You can have either compile-time or run-time annotations.
-@Override is a simple compile-time annotation to catch little mistakes like typing tostring( ) instead of toString( ) in a subclass.
-If you remove the toString( ) method in Class A or misspell toString() method in Class B, the compiler will warn you.
-User defined annotations can be processed at compile-time using the Annotation Pr ocessing T ool (APT) that is included in the Java 6 itself.
-@Test is an annotation that JUnit framework uses at runtime with the help of reflection to determine which method(s) to execute within a test class.public class B extends A {
- 
- private String input; 
- @Override
- public String toString (){
- return "input=" + input ;
- } 
-public class MyT est{
- @Test
- public void testEmptyness ( ){
- org.junit.Assert .assertT rue(getList ( ).isEmpty ( ));
- }
- private List getList ( ){
- …
-
-The test below fails if it takes more than 100ms to execute at runtime.
-The code shown below fails if it does not throw “IndexOutOfBoundsException” or if it throws a different exception at runtime. A negative JUnit test.
+- [Introduction to Annotations](#introduction-to-annotations)
+  - [What are Annotations?](#what-are-annotations)
+  - [Why Use Annotations?](#why-use-annotations)
+  - [Annotations vs XML Configuration](#annotations-vs-xml-configuration)
+- [Built-in Java Annotations](#built-in-java-annotations)
+  - [@Override](#override)
+  - [@Deprecated](#deprecated)
+  - [@SuppressWarnings](#suppresswarnings)
+  - [@SafeVarargs](#safevarargs)
+  - [@FunctionalInterface](#functionalinterface)
+- [Meta-Annotations](#meta-annotations)
+  - [@Retention](#retention)
+  - [@Target](#target)
+  - [@Documented](#documented)
+  - [@Inherited](#inherited)
+  - [@Repeatable](#repeatable)
+- [Custom Annotations](#custom-annotations)
+  - [Creating Custom Annotations](#creating-custom-annotations)
+  - [Processing Custom Annotations](#processing-custom-annotations)
+- [Framework Annotations](#framework-annotations)
+  - [JAX-RS (RESTful Web Services)](#jax-rs-restful-web-services)
+  - [Spring Framework](#spring-framework)
+  - [JEE CDI (Contexts and Dependency Injection)](#jee-cdi-contexts-and-dependency-injection)
+  - [JPA/Hibernate](#jpahibernate)
+  - [JUnit Testing](#junit-testing)
+  - [Servlet 3.0+](#servlet-30)
+- [Interview Questions](#interview-questions)
 
 ---
 
-## 🔹 Q2: Are marker or tag interfaces like Serializable, Runnable, etc obsolete with the advent of annotations (i.e. runtime annotations)?
+## Introduction to Annotations
 
-**Answer:**
+### What are Annotations?
 
-Everything that can be done with a marker or tag interfaces in earlier versions of Java can now be done with annotations at runtime using reflection. One of
-the common problems with the marker or tag interfaces like Serializable, Cloneable, etc is that when a class implements them, all of its subclasses inherit them
-as well whether you want them to or not. You cannot force your subclasses to unimplement an interface. Annotations can have parameters of various kinds, and
-they’re much more flexible than the marker interfaces. This makes tag or marker interfaces obsolete, except for
-— In the very rare event of the profiling indicating that the runtime checks are expensive due to being accessed very frequently, and compile-time checks with
-interfaces is preferred.
-— In the event of existing marker interfaces like Serializable, Cloneable, etc are used or Java 5 or later versions cannot be temporarily used.
+**Annotations are metadata** - data about data. They provide information about code to:
+- **Compilers**: For error checking and suppressing warnings
+- **Build tools**: For generating code, XML files, and documentation
+- **Runtime**: For examining and modifying behavior using reflection
 
----
+**Key Characteristics:**
+- Declared using `@interface` keyword
+- Can have elements (like methods)
+- Can be applied to classes, methods, fields, parameters, etc.
+- Processed at compile-time, deployment-time, or runtime
 
-## 🔹 Q3: What is an annotation, and why are they so popular and used in every framework like Spring, JAX-RS (i.e RESTful web service), JEE 6, and a lot more?
-When will you favor XML based meta data over annotations based meta data? }
-@Test(timeout =100)
-public void testT imeout ( ) {
- while (true); //infinite loop
+### Why Use Annotations?
+
+**1. Declarative Programming:**
+```java
+// Without annotations - imperative
+public class UserServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        // Handle GET request
+    }
 }
-@Test (expected =IndexOutOfBoundsException .class )
-public void testOutOfBounds ( ) {
- new ArrayList <Object >( ).get(1);
+// web.xml configuration needed
+
+// With annotations - declarative
+@WebServlet("/users")
+public class UserServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        // Handle GET request
+    }
 }
+// No web.xml needed!
+```
 
-**Answer:**
-
-One word to explain Annotation is Metadata. Metadata is data about data. So Annotations are metadata for code. The IDEs, compilers, frameworks, and
-other tools read the annotations to control the behavior of the code that are annotated.
-Prior to annotation (and even after) XML were extensively used for metadata, but XML is very verbose and its maintenance was becoming troublesome. Since
-annotations are closely coupled with the code, they are less verbose. You can define annotations for a class, method, field, etc. XML is defined separately from
-the code, so it is more verbose as you have to define the class name, method name, etc.
-If you want to set some application wide constants and parameters XML would be a better choice because this is not related with any specific piece of code. If
-you want to expose some method as a Web service, annotation would be a better choice as it needs to be tightly coupled with that method and developer of the
-method must be aware of this.
-Annotations: let you avoid boilerplate code under many circumstances by enabling tools to generate it from annotations in the source code. This leads to
-“attribute oriented” (aka declarative) programming. This eliminates the need to maintain “side files” that must be kept up to date with changes in source files.
-Annotations based development relieves Java developers from the pain of cumbersome configuration. Annotations provide declarative style programming where
-the programmer says what should be done and tools emit the code to do it. This assists rapid application development, easier maintenance, and less likely to be
-bug-prone.
-In Spring’ s world, an XML config (e.g myapp-applicationContext.xml) to scan for all annotations in the base-package can be defined as shown below .
-A POJO is exposed as a RESTful web service with JAX-RS annotations like @Path, @Produces, @GET, @PathParam, etc.<!-- Component -Scan automatically detects annotations in the Java classes. -->
-<context :component -scan base-package ="com.myapp.batch" />
-package com.mytutorial .webservice ;
-mport javax .ws.rs.GET ;
-mport javax .ws.rs.Path;
-mport javax .ws.rs.PathParam ;
-mport javax .ws.rs.Produces ;
-mport com.mytutorial .pojo.User ;
-
-In JEE 6 CDI (Contexts and Dependency Injection) world
-You need to have at least an empty “ beans.xml ” file defined under MET A-INF resource folder for jar files or under WEB-INF folder for war files for DI to take
-effect.
-and @inject annotation to inject dependencies.@Path("userservice/1.0" )
-@Produces ("application/xml" )
-public class HelloUserWebServiceImpl implements HelloUserWebService {
-@GET
-@Path("/user/{userName}" )
-public User greetUser (@PathParam ("userName" ) String userName ) {
- User user = new User ();
- user.setName (userName );
- return user;
+**2. Reduced Boilerplate:**
+```java
+// Without annotations
+public class UserService {
+    private UserDAO userDAO;
+    
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 }
-<beans xmlns ="http://java.sun.com/xml/ns/javaee" xmlns :xsi="http://www .w3.or g/2001/XMLSchema-instance"
- xsi:schemaLocation ="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd" >
-</beans >
-mport javax .inject .Inject ;
+// XML: <bean><property name="userDAO" ref="userDAO"/></bean>
 
----
-
-## 🔹 Q4: How will you go about defining a custom annotation? Can you give a practical example?
-
-**Answer:**
-
-Here is an example where methods annotated with the following custom @DeadlockRetry annotation will retry the database operation. The annotation has
-the attributes maxT ries and tryIntervalMillis .public class MyApp {
- 
- private final HelloService helloService ;
- @Inject
- public MyApp (HelloBean helloBean ){
- this.helloService = helloService ;
- }
- //.....
-@Default
-public class HelloServiceImpl implements HelloService {
- 
- public void sayHello () {
- System.out.println ("say hello ........." );
- }
+// With annotations
+public class UserService {
+    @Autowired
+    private UserDAO userDAO;
 }
-package com.myapp .deadlock ;
-mport java.lang.annotation .ElementT ype;
-mport java.lang.annotation .Inherited ;
-mport java.lang.annotation .Retention ;
-mport java.lang.annotation .RetentionPolicy ;
-mport java.lang.annotation .Target;
+// No XML needed!
+```
 
-The above custom annotation is annotated with @Retention to tell that it is used at run-time, and @Target to tell that it is for methods.
-Q. Now, who processes this annotation?
-A. The following dynamic pr oxy class that uses reflection to see if a method is annotated with @DeadlockRetry. If does, retries the database method call.@Retention (RetentionPolicy .RUNTIME )
-@Target(ElementT ype.METHOD )
-@Inherited
-public @interface DeadlockRetry
-{
- int maxT ries() default 10;
- int tryIntervalMillis () default 1000 ;
-package com.myapp .deadlock ;
-mport java.lang.annotation .Annotation ;
-mport java.lang.reflect .InvocationHandler ;
-mport java.lang.reflect .Method ;
-public class DeadlockRetryHandler implements InvocationHandler
-{ 
- private Object target;
- 
- public DeadlockRetryHandler (Object target)
- {
- this.target = target;
- }
- 
- @Override
- public Object invoke (Object proxy, Method method, Object [] args) throws Throwable
- {
- Annotation [] annotations = method .getAnnotations ();
- DeadlockRetry deadlockRetry = (DeadlockRetry ) annotations [0];
+**3. Type Safety:**
+```java
+// XML - no compile-time checking
+<property name="maxConnections" value="ten"/> <!-- Runtime error! -->
 
- final Integer maxT ries = deadlockRetry .maxT ries();
- long tryIntervalMillis = deadlockRetry .tryIntervalMillis ();
- 
- int count = 0;
- 
- do
- {
- try
- {
- count ++;
- Object result = method .invoke (target, args); // retry
- return result ;
- }
- catch (Throwable e)
- {
- if (!DeadlockUtil .isDeadLock (e))
- {
- throw new RuntimeException (e);
- }
- 
- if (tryIntervalMillis > 0)
- {
- try
- {
- Thread .sleep (tryIntervalMillis );
- }
- catch (InterruptedException ie)
- {
- System.out.println ("Deadlock retry thread interrupted", ie);
- }
- }
- }
- }
- while (count <= maxT ries);
- 
- //gets here only when all attempts have failed
- throw new RuntimeException ("DeadlockRetryMethodInterceptor failed to successfully execute tar get "
- + " due to deadlock in all retry attempts" ,
- new DeadlockDataAccessException ("Created by DeadlockRetryMethodInterceptor", null));
- } 
+// Annotations - compile-time checking
+@Configuration(maxConnections = 10) // Type-safe
+```
 
-The DeadlockUtil class determines if the exception is related to deadlock or other SQL exception based on error code and exception type like
-“LockAcquisitionException”.
-Now define the target object interface with the custom annotation. The maxT ries = 10, tryIntervalMillis = 5000.
+### Annotations vs XML Configuration
 
----
+| Aspect | Annotations | XML |
+|--------|------------|-----|
+| **Location** | In source code | Separate file |
+| **Coupling** | Tight (code + config together) | Loose (separate) |
+| **Type Safety** | Yes (compile-time) | No (runtime) |
+| **Refactoring** | IDE support | Manual updates |
+| **Verbosity** | Less verbose | More verbose |
+| **Flexibility** | Less flexible | More flexible |
+| **Best For** | Code-specific config | Environment-specific config |
 
-## 🔹 Q5: What are some of the JAX-RS (i.e RESTful) web service annotations?
+**When to Use Each:**
 
-**Answer:**
+✓ **Use Annotations for:**
+- Code-specific configuration (e.g., @Entity, @Service)
+- Behavior tied to specific methods/classes
+- Development-time configuration
+- Type-safe configuration
 
-@GET, @POST, @PUT, @DELETE to specify what type of verb this method (or web service) will perform.
-@Pr oduces to specify the type of output this method (or web service) will produce.
-@Consumes to specify the MIME media types a REST resource can consume.
-@Path to specify the URL path on which this method will be invoked.
-@PathParam to bind REST style parameters to method arguments.
-@QueryParam to access parameters in query string (http://localhost:8080/context/accounting-services?accountName=PeterAndCo).
-Another example for custom annotation would be for service retry .
+✓ **Use XML for:**
+- Environment-specific settings (URLs, credentials)
+- Application-wide constants
+- Configuration that changes per deployment
+- Third-party library configuration
 
----
+**Example - Spring Configuration:**
 
-## 🔹 Q6: What are some of the widely used Spring annotations?
+```xml
+<!-- XML approach - good for environment-specific settings -->
+<context:component-scan base-package="com.myapp.batch" />
 
-**Answer:**
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="url" value="${db.url}"/>
+    <property name="username" value="${db.username}"/>
+</bean>
+```
 
-The Spring beans can be wired either by name or type. @Autowir ed by default is a type driven injection. @Autowired is Spring annotation, while @Inject
-is a JEE CDI annotation. @Inject is equivalent to @Autowired or @Autowired(required=true). @Qualifier spring annotation can be used to further fine-tune
-auto-wiring. There may be a situation when you create more than one bean of the same type and want to wire only one of them with a property, in such case you
-can use @Qualifier annotation along with @Autowired to remove the confusion by specifying which exact bean will be wired.package com.myapp .engine ;
-mport com.myapp .DeadlockRetry ;
-public interface AccountServicePersistenceDelegate
-{
- @DeadlockRetry (maxT ries = 10, tryIntervalMillis = 5000 )
- abstract Account getAccount (String accountNumber );
-
-The different POJO objects in different layers are annotated with one of the following key annotations.
-Spring annotations
-@Component is the parent annotation from which the other annotations like @Service, @Resource, @Repository etc are defined. Here is an example of a
-DAO class annotated with @Repository, and @Resource is used to inject “jdbcT emplateSybase” with which the database calls are made.
-The annotations shown above allow you to declare beans that are to be picked up by autoscanning with or @ComponentScan .@Repository (value = "myapp_Dao" )
-public class CashForecastDaoImpl implements CashForecastDao
-{
- 
- @Resource (name = "myapp_JdbcT emplate" )
- private JdbcT emplate jdbcT emplateSybase ;//configure via jdbcContext.xml
- public PortfolioSummaryVO retrievePortfolioSummaries (MyAppPortfolioCriteria criteria ) {
- //............use jdbcT emplateSybase
- }
-
-The @Configuration annotation was designed as the replacement for XML configuration files. You use @Bean annotation to wire up dependencies. Here is an
-example.
-package com.myapp .bdd.stories ;
-mport com.myapp .*;
-mport org.powermock .api.mockito .PowerMockito ;
-mport org.springframework .context .annotation .Bean ;
-mport org.springframework .context .annotation .ComponentScan ;
-mport org.springframework .context .annotation .Configuration ;
-mport org.springframework .context .annotation .FilterT ype;
-mport org.springframework .context .annotation .Import ;
+```java
+// Annotation approach - good for code-specific configuration
 @Configuration
-/packages and components to scan and include
-@ComponentScan (
- basePackages =
- {
- "com.myapp.calculation.bdd" ,
- "com.myapp.refdata" ,
- "com.myapp.dm.dao"
- 
- },
- useDefaultFilters = false ,
- //interfaces
- includeFilters =
- { 
- @ComponentScan .Filter (type = FilterT ype.ASSIGNABLE_TYPE, value = MyApp .class ),
- @ComponentScan .Filter (type = FilterT ype.ASSIGNABLE_TYPE, value = MyAppDroolsHelper .class ),
- @ComponentScan .Filter (type = FilterT ype.ASSIGNABLE_TYPE, value = TransactionService .class ),
- @ComponentScan .Filter (type = FilterT ype.ASSIGNABLE_TYPE, value = TransactionV alidator .class ),
- 
- @ComponentScan .Filter (type = FilterT ype.annotation, value = org.springframework .stereotype .Repository .class )
- })
-/import other config classes
-@Import (
-{
- StepsConfig .class ,
- DataSourceConfig .class ,
+@ComponentScan(basePackages = "com.myapp.batch")
+public class AppConfig {
+    
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl(env.getProperty("db.url"));
+        ds.setUsername(env.getProperty("db.username"));
+        return ds;
+    }
+}
+```
 
 ---
 
-## 🔹 Q7: What are some of the widely used JEE CDI annotations?
+## Built-in Java Annotations
 
-**Answer:**
+### @Override
 
-CDI is one of the biggest promises of JEE 6.
-@Default, @Alternative, and @Name : A class is @Default by default. Thus marking it a redundant annotation. Mark as @Alternative to annotate the
-alternative implementations that implement the same interface. Use the @Named annotation to look up by name. The @Named annotation is also used by JEE
-6 application to make the bean accessible via the Unified EL.
-The interface
-The default implementation JmsConfig .class ,
- PropertiesConfig .class
+**Purpose**: Indicates that a method overrides a method in a superclass.
+
+**Benefits:**
+- Compile-time checking for typos
+- Documents intent
+- Prevents accidental overloading instead of overriding
+
+```java
+public class Parent {
+    public String toString() {
+        return "Parent";
+    }
+}
+
+public class Child extends Parent {
+    @Override
+    public String toString() { // Correct override
+        return "Child";
+    }
+    
+    // Compilation error - method doesn't exist in parent
+    // @Override
+    // public String tostring() { // Typo: lowercase 's'
+    //     return "Child";
+    // }
+}
+```
+
+**Common Use Cases:**
+
+```java
+public class Employee {
+    private String name;
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Employee employee = (Employee) obj;
+        return Objects.equals(name, employee.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+    
+    @Override
+    public String toString() {
+        return "Employee{name='" + name + "'}";
+    }
+}
+```
+
+---
+
+### @Deprecated
+
+**Purpose**: Marks code that should no longer be used.
+
+**Syntax (Java 9+):**
+```java
+@Deprecated(since = "1.5", forRemoval = true)
+```
+
+**Examples:**
+
+```java
+public class LegacyAPI {
+    
+    /**
+     * @deprecated Use {@link #newMethod(String)} instead
+     */
+    @Deprecated
+    public void oldMethod() {
+        System.out.println("Old implementation");
+    }
+    
+    public void newMethod(String param) {
+        System.out.println("New implementation: " + param);
+    }
+    
+    // Java 9+ - more informative
+    @Deprecated(since = "2.0", forRemoval = true)
+    public void veryOldMethod() {
+        System.out.println("Will be removed in next major version");
+    }
+}
+
+// Usage - compiler warning
+public class Client {
+    public void useAPI() {
+        LegacyAPI api = new LegacyAPI();
+        api.oldMethod(); // Warning: 'oldMethod()' is deprecated
+    }
+}
+```
+
+**Best Practices:**
+- Always provide alternative in Javadoc
+- Use `since` parameter to indicate when deprecated
+- Use `forRemoval = true` if planning to remove
+- Provide migration path for users
+
+---
+
+### @SuppressWarnings
+
+**Purpose**: Suppresses compiler warnings.
+
+**Common Warning Types:**
+
+```java
+public class WarningExamples {
+    
+    // Suppress unchecked warnings
+    @SuppressWarnings("unchecked")
+    public void uncheckedExample() {
+        List rawList = new ArrayList(); // Raw type
+        rawList.add("String");
+        List<String> typedList = rawList; // Unchecked cast
+    }
+    
+    // Suppress deprecation warnings
+    @SuppressWarnings("deprecation")
+    public void deprecationExample() {
+        Date date = new Date();
+        int year = date.getYear(); // Deprecated method
+    }
+    
+    // Suppress multiple warnings
+    @SuppressWarnings({"unchecked", "deprecation"})
+    public void multipleWarnings() {
+        // Code with multiple warning types
+    }
+    
+    // Suppress all warnings (use sparingly!)
+    @SuppressWarnings("all")
+    public void suppressAll() {
+        // All warnings suppressed
+    }
+}
+```
+
+**Common Warning Types:**
+- `unchecked` - Unchecked operations
+- `deprecation` - Deprecated API usage
+- `rawtypes` - Raw type usage
+- `unused` - Unused code
+- `serial` - Missing serialVersionUID
+- `all` - All warnings (use carefully!)
+
+**Best Practice:**
+```java
+// ✓ Good - specific scope
+public class GoodExample {
+    @SuppressWarnings("unchecked")
+    private List<String> getList() {
+        return (List<String>) getRawList();
+    }
+}
+
+// ✗ Bad - too broad
+@SuppressWarnings("all") // Suppresses everything!
+public class BadExample {
+    // All warnings in entire class suppressed
+}
+```
+
+---
+
+### @SafeVarargs
+
+**Purpose**: Suppresses warnings about potentially unsafe varargs operations.
+
+```java
+public class VarargsExample {
+    
+    // Without @SafeVarargs - compiler warning
+    public static <T> List<T> asList(T... elements) {
+        List<T> list = new ArrayList<>();
+        for (T element : elements) {
+            list.add(element);
+        }
+        return list;
+    }
+    
+    // With @SafeVarargs - no warning
+    @SafeVarargs
+    public static <T> List<T> asListSafe(T... elements) {
+        List<T> list = new ArrayList<>();
+        for (T element : elements) {
+            list.add(element);
+        }
+        return list;
+    }
+    
+    // Usage
+    public static void main(String[] args) {
+        List<String> list = asListSafe("A", "B", "C");
+    }
+}
+```
+
+**Requirements:**
+- Method must be `static`, `final`, or `private`
+- Method must not perform unsafe operations on varargs array
+
+---
+
+### @FunctionalInterface
+
+**Purpose**: Indicates that an interface is intended to be a functional interface (SAM - Single Abstract Method).
+
+```java
+@FunctionalInterface
+public interface Calculator {
+    int calculate(int a, int b);
+    
+    // Default methods allowed
+    default int add(int a, int b) {
+        return a + b;
+    }
+    
+    // Static methods allowed
+    static int multiply(int a, int b) {
+        return a * b;
+    }
+    
+    // Compilation error - only one abstract method allowed
+    // int subtract(int a, int b);
+}
+
+// Usage with lambda
+public class FunctionalExample {
+    public static void main(String[] args) {
+        Calculator add = (a, b) -> a + b;
+        Calculator multiply = (a, b) -> a * b;
+        
+        System.out.println(add.calculate(5, 3));      // 8
+        System.out.println(multiply.calculate(5, 3)); // 15
+    }
+}
+```
+
+---
+
+## Meta-Annotations
+
+Meta-annotations are annotations that apply to other annotations.
+
+### @Retention
+
+**Purpose**: Specifies how long annotations are retained.
+
+**Retention Policies:**
+
+```java
+import java.lang.annotation.*;
+
+// SOURCE - Discarded by compiler
+@Retention(RetentionPolicy.SOURCE)
+public @interface SourceAnnotation {
+    // Used by tools like Lombok, not in bytecode
+}
+
+// CLASS - In bytecode, not available at runtime (default)
+@Retention(RetentionPolicy.CLASS)
+public @interface ClassAnnotation {
+    // Available for bytecode processors
+}
+
+// RUNTIME - Available at runtime via reflection
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RuntimeAnnotation {
+    // Can be read at runtime
+}
+```
+
+**Examples:**
+
+```java
+// Compile-time only
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.METHOD)
+public @interface Override {
+}
+
+// Runtime processing
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Test {
+    long timeout() default 0L;
+}
+```
+
+---
+
+### @Target
+
+**Purpose**: Specifies where an annotation can be applied.
+
+**Element Types:**
+
+```java
+import java.lang.annotation.*;
+
+// Single target
+@Target(ElementType.METHOD)
+public @interface MethodOnly {
+}
+
+// Multiple targets
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface TypeOrMethod {
+}
+
+// All element types
+@Target({
+    ElementType.TYPE,           // Class, interface, enum
+    ElementType.FIELD,          // Field (including enum constants)
+    ElementType.METHOD,         // Method
+    ElementType.PARAMETER,      // Method parameter
+    ElementType.CONSTRUCTOR,    // Constructor
+    ElementType.LOCAL_VARIABLE, // Local variable
+    ElementType.ANNOTATION_TYPE,// Annotation type
+    ElementType.PACKAGE,        // Package
+    ElementType.TYPE_PARAMETER, // Type parameter (Java 8+)
+    ElementType.TYPE_USE        // Any use of a type (Java 8+)
+})
+public @interface Everywhere {
+}
+```
+
+**Examples:**
+
+```java
+// Method-only annotation
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Transactional {
+    String value() default "";
+}
+
+// Field-only annotation
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Inject {
+}
+
+// Usage
+public class Service {
+    @Inject
+    private Repository repository;
+    
+    @Transactional
+    public void saveData() {
+        // Method implementation
+    }
+}
+```
+
+---
+
+### @Documented
+
+**Purpose**: Indicates that annotations should be included in Javadoc.
+
+```java
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Author {
+    String name();
+    String date();
+}
+
+// Usage
+public class MyClass {
+    /**
+     * Processes user data
+     */
+    @Author(name = "John Doe", date = "2024-01-15")
+    public void processData() {
+        // Implementation
+    }
+}
+// @Author will appear in generated Javadoc
+```
+
+---
+
+### @Inherited
+
+**Purpose**: Indicates that an annotation is automatically inherited by subclasses.
+
+```java
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Auditable {
+    String value() default "";
+}
+
+@Auditable("Parent class")
+public class Parent {
+}
+
+// Child automatically inherits @Auditable
+public class Child extends Parent {
+}
+
+// Check at runtime
+public class InheritanceTest {
+    public static void main(String[] args) {
+        System.out.println(Parent.class.isAnnotationPresent(Auditable.class)); // true
+        System.out.println(Child.class.isAnnotationPresent(Auditable.class));  // true
+    }
+}
+```
+
+**Important**: Only works for class inheritance, not interface implementation or method overriding.
+
+---
+
+### @Repeatable
+
+**Purpose**: Allows an annotation to be applied multiple times (Java 8+).
+
+```java
+// Container annotation
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Schedules {
+    Schedule[] value();
+}
+
+// Repeatable annotation
+@Repeatable(Schedules.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Schedule {
+    String day();
+    String time();
+}
+
+// Usage
+public class TaskScheduler {
+    @Schedule(day = "Monday", time = "09:00")
+    @Schedule(day = "Wednesday", time = "14:00")
+    @Schedule(day = "Friday", time = "16:00")
+    public void runTask() {
+        System.out.println("Task executed");
+    }
+}
+
+// Reading repeatable annotations
+public class ScheduleReader {
+    public static void main(String[] args) throws Exception {
+        Method method = TaskScheduler.class.getMethod("runTask");
+        Schedule[] schedules = method.getAnnotationsByType(Schedule.class);
+        
+        for (Schedule schedule : schedules) {
+            System.out.println(schedule.day() + " at " + schedule.time());
+        }
+    }
+}
+```
+
+---
+
+## Custom Annotations
+
+### Creating Custom Annotations
+
+**Basic Structure:**
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MyAnnotation {
+    // Elements (like methods)
+    String value();                    // Required
+    int priority() default 1;          // Optional with default
+    String[] tags() default {};        // Array with default
+}
+```
+
+**Example 1: @ToDo Annotation**
+
+```java
+@Documented
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface ToDo {
+    String value();                           // Short description
+    String assignedTo() default "Unassigned";
+    String dateAssigned() default "Unknown";
+    Priority priority() default Priority.MEDIUM;
+    String[] tags() default {};
+    
+    enum Priority {
+        LOW, MEDIUM, HIGH, CRITICAL
+    }
+}
+
+// Usage
+@ToDo(
+    value = "Implement caching mechanism",
+    assignedTo = "John Doe",
+    dateAssigned = "2024-01-15",
+    priority = ToDo.Priority.HIGH,
+    tags = {"performance", "optimization"}
 )
-public class StoryConfig
-{
- //creates a partially mocked transaction service class
- @Bean (name = "txnService" )
- public TransactionService getTransactionService ()
- {
- return PowerMockito .spy(new TransactionService ());
- } 
-public interface PaymentService {
- public void processPayment (BigDecimal amount, Account account );
+public class CacheService {
+    
+    @ToDo(
+        value = "Add input validation",
+        priority = ToDo.Priority.CRITICAL
+    )
+    public void processData(String data) {
+        // Implementation
+    }
+}
+```
+
+**Example 2: @DeadlockRetry Annotation**
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Inherited
+public @interface DeadlockRetry {
+    int maxTries() default 10;
+    int tryIntervalMillis() default 1000;
 }
 
-An alternative implementation
-An alternative can be selected via XML based deployment files in {classpath}/MET A-INF/beans.xml@Default
-public class CashPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+// Usage
+public interface AccountService {
+    @DeadlockRetry(maxTries = 10, tryIntervalMillis = 5000)
+    Account getAccount(String accountNumber);
+    
+    @DeadlockRetry(maxTries = 5, tryIntervalMillis = 2000)
+    void updateAccount(Account account);
 }
+```
+
+**Example 3: @Validate Annotation**
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Validate {
+    int minLength() default 0;
+    int maxLength() default Integer.MAX_VALUE;
+    String pattern() default "";
+    boolean required() default false;
+}
+
+// Usage
+public class User {
+    @Validate(required = true, minLength = 3, maxLength = 50)
+    private String username;
+    
+    @Validate(required = true, pattern = "^[A-Za-z0-9+_.-]+@(.+)$")
+    private String email;
+    
+    @Validate(minLength = 8, maxLength = 100)
+    private String password;
+}
+```
+
+---
+
+### Processing Custom Annotations
+
+**Runtime Processing with Reflection:**
+
+```java
+public class AnnotationProcessor {
+    
+    // Process @ToDo annotations
+    public static void generateToDoReport(Class<?> clazz) {
+        System.out.println("=== TODO Report for " + clazz.getSimpleName() + " ===\n");
+        
+        // Check class-level annotation
+        if (clazz.isAnnotationPresent(ToDo.class)) {
+            ToDo todo = clazz.getAnnotation(ToDo.class);
+            printToDo("Class", clazz.getSimpleName(), todo);
+        }
+        
+        // Check method-level annotations
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(ToDo.class)) {
+                ToDo todo = method.getAnnotation(ToDo.class);
+                printToDo("Method", method.getName(), todo);
+            }
+        }
+    }
+    
+    private static void printToDo(String type, String name, ToDo todo) {
+        System.out.println(type + ": " + name);
+        System.out.println("  Description: " + todo.value());
+        System.out.println("  Assigned To: " + todo.assignedTo());
+        System.out.println("  Date: " + todo.dateAssigned());
+        System.out.println("  Priority: " + todo.priority());
+        System.out.println("  Tags: " + String.join(", ", todo.tags()));
+        System.out.println();
+    }
+    
+    // Process @Validate annotations
+    public static <T> void validate(T object) throws ValidationException {
+        Class<?> clazz = object.getClass();
+        
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Validate.class)) {
+                Validate validate = field.getAnnotation(Validate.class);
+                field.setAccessible(true);
+                
+                try {
+                    Object value = field.get(object);
+                    
+                    // Check required
+                    if (validate.required() && value == null) {
+                        throw new ValidationException(
+                            field.getName() + " is required");
+                    }
+                    
+                    // Check string validations
+                    if (value instanceof String) {
+                        String strValue = (String) value;
+                        
+                        if (strValue.length() < validate.minLength()) {
+                            throw new ValidationException(
+                                field.getName() + " is too short");
+                        }
+                        
+                        if (strValue.length() > validate.maxLength()) {
+                            throw new ValidationException(
+                                field.getName() + " is too long");
+                        }
+                        
+                        if (!validate.pattern().isEmpty() && 
+                            !strValue.matches(validate.pattern())) {
+                            throw new ValidationException(
+                                field.getName() + " has invalid format");
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new ValidationException("Cannot access field: " + 
+                        field.getName(), e);
+                }
+            }
+        }
+    }
+}
+
+// Usage
+public class Main {
+    public static void main(String[] args) {
+        // Generate TODO report
+        AnnotationProcessor.generateToDoReport(CacheService.class);
+        
+        // Validate object
+        User user = new User();
+        user.setUsername("jo"); // Too short
+        user.setEmail("invalid-email");
+        
+        try {
+            AnnotationProcessor.validate(user);
+        } catch (ValidationException e) {
+            System.err.println("Validation failed: " + e.getMessage());
+        }
+    }
+}
+```
+
+**Dynamic Proxy for Method Interception:**
+
+```java
+public class DeadlockRetryHandler implements InvocationHandler {
+    private Object target;
+    
+    public DeadlockRetryHandler(Object target) {
+        this.target = target;
+    }
+    
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) 
+            throws Throwable {
+        
+        if (!method.isAnnotationPresent(DeadlockRetry.class)) {
+            return method.invoke(target, args);
+        }
+        
+        DeadlockRetry annotation = method.getAnnotation(DeadlockRetry.class);
+        int maxTries = annotation.maxTries();
+        long interval = annotation.tryIntervalMillis();
+        
+        int attempt = 0;
+        while (attempt < maxTries) {
+            try {
+                attempt++;
+                return method.invoke(target, args);
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                
+                if (!isDeadlock(cause)) {
+                    throw cause;
+                }
+                
+                if (attempt >= maxTries) {
+                    throw new RuntimeException(
+                        "Failed after " + maxTries + " attempts", cause);
+                }
+                
+                System.out.println("Deadlock detected, retrying... (attempt " + 
+                    attempt + "/" + maxTries + ")");
+                
+                if (interval > 0) {
+                    Thread.sleep(interval);
+                }
+            }
+        }
+        
+        throw new RuntimeException("Should not reach here");
+    }
+    
+    private boolean isDeadlock(Throwable e) {
+        // Check if exception is deadlock-related
+        return e instanceof SQLException && 
+               e.getMessage().contains("deadlock");
+    }
+}
+
+// Create proxy
+AccountService service = new AccountServiceImpl();
+AccountService proxy = (AccountService) Proxy.newProxyInstance(
+    service.getClass().getClassLoader(),
+    service.getClass().getInterfaces(),
+    new DeadlockRetryHandler(service)
+);
+
+// Use proxy - automatic retry on deadlock
+Account account = proxy.getAccount("12345");
+```
+
+---
+
+## Framework Annotations
+
+### JAX-RS (RESTful Web Services)
+
+```java
+@Path("userservice/1.0")
+@Produces("application/json")
+@Consumes("application/json")
+public class UserWebService {
+    
+    @GET
+    @Path("/user/{id}")
+    public User getUser(@PathParam("id") String userId) {
+        return userService.findById(userId);
+    }
+    
+    @POST
+    @Path("/user")
+    public Response createUser(User user) {
+        userService.save(user);
+        return Response.status(201).entity(user).build();
+    }
+    
+    @PUT
+    @Path("/user/{id}")
+    public Response updateUser(
+            @PathParam("id") String userId,
+            User user) {
+        userService.update(userId, user);
+        return Response.ok(user).build();
+    }
+    
+    @DELETE
+    @Path("/user/{id}")
+    public Response deleteUser(@PathParam("id") String userId) {
+        userService.delete(userId);
+        return Response.noContent().build();
+    }
+    
+    @GET
+    @Path("/users")
+    public List<User> searchUsers(
+            @QueryParam("name") String name,
+            @QueryParam("age") Integer age,
+            @DefaultValue("10") @QueryParam("limit") int limit) {
+        return userService.search(name, age, limit);
+    }
+}
+```
+
+**Common JAX-RS Annotations:**
+- `@Path` - URL path mapping
+- `@GET`, `@POST`, `@PUT`, `@DELETE` - HTTP methods
+- `@Produces` - Response content type
+- `@Consumes` - Request content type
+- `@PathParam` - URL path parameters
+- `@QueryParam` - Query string parameters
+- `@HeaderParam` - HTTP header parameters
+- `@DefaultValue` - Default parameter values
+
+---
+
+### Spring Framework
+
+**Dependency Injection:**
+
+```java
+@Service
+public class UserService {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    // Constructor injection (preferred)
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
+    // Qualifier for multiple beans
+    @Autowired
+    @Qualifier("primaryDataSource")
+    private DataSource dataSource;
+}
+
+@Repository
+public class UserRepository {
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    
+    public User findById(Long id) {
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM users WHERE id = ?",
+            new Object[]{id},
+            new UserRowMapper()
+        );
+    }
+}
+```
+
+**Configuration:**
+
+```java
+@Configuration
+@ComponentScan(
+    basePackages = {
+        "com.myapp.service",
+        "com.myapp.repository"
+    },
+    includeFilters = @ComponentScan.Filter(
+        type = FilterType.ANNOTATION,
+        value = Repository.class
+    )
+)
+@PropertySource("classpath:application.properties")
+public class AppConfig {
+    
+    @Value("${db.url}")
+    private String dbUrl;
+    
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl(dbUrl);
+        return ds;
+    }
+    
+    @Bean
+    @Primary
+    public UserService userService() {
+        return new UserServiceImpl();
+    }
+}
+```
+
+**Spring MVC:**
+
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @Autowired
+    private UserService userService;
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.findById(id);
+        return ResponseEntity.ok(user);
+    }
+    
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+        User created = userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+    
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(e.getMessage());
+    }
+}
+```
+
+**Common Spring Annotations:**
+- `@Component`, `@Service`, `@Repository`, `@Controller` - Stereotype annotations
+- `@Autowired`, `@Inject`, `@Resource` - Dependency injection
+- `@Qualifier` - Bean selection
+- `@Configuration`, `@Bean` - Java-based configuration
+- `@Value` - Property injection
+- `@Transactional` - Transaction management
+- `@Async` - Asynchronous execution
+- `@Scheduled` - Task scheduling
+
+---
+
+### JEE CDI (Contexts and Dependency Injection)
+
+**Basic Injection:**
+
+```java
+// beans.xml required in META-INF or WEB-INF
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                           http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+       bean-discovery-mode="all">
+</beans>
+```
+
+```java
+// Default implementation
+@Default
+public class CashPaymentService implements PaymentService {
+    public void processPayment(BigDecimal amount, Account account) {
+        System.out.println("Processing cash payment: " + amount);
+    }
+}
+
+// Alternative implementations
 @Alternative
-public class BPayPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+public class BPayPaymentService implements PaymentService {
+    public void processPayment(BigDecimal amount, Account account) {
+        System.out.println("Processing BPay payment: " + amount);
+    }
 }
+
 @Alternative
-public class CreditCardPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+public class CreditCardPaymentService implements PaymentService {
+    public void processPayment(BigDecimal amount, Account account) {
+        System.out.println("Processing credit card payment: " + amount);
+    }
 }
 
-A named implementation
-Named annotations can be looked up via the JEE bean container .
-@Inject to inject via fields and constructors.<beans xmlns ="http://java.sun.com/xml/ns/javaee" xmlns :xsi="http://www .w3.or g/2001/XMLSchema-instance"
- xsi:schemaLocation ="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd" >
- <alternatives >
- <class >BPayPaymentServiceImpl </class >
- </alternatives >
-</beans >
-@Named ("cash" )
-public class CashPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+// Injection
+public class PaymentProcessor {
+    @Inject
+    private PaymentService paymentService; // Injects @Default
+    
+    // Constructor injection
+    @Inject
+    public PaymentProcessor(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 }
-public class PaymentMain {
- //...
- public static void main (String [] args) throws Exception {
- PaymentService svc = (PaymentService ) beanContainer
- .getBeanByName ("cash" );
- svc.processPayment (new BigDecimal ("9.00" ), acc);
- }
+```
 
-@Pr oduces for more complex object construction via factory methods .public class PaymentMain {
- 
- @Inject
- private PaymentService paymentService ;
- //...
-}
-public class PaymentMain {
- 
- private PaymentService paymentService ;
- @Inject
- public PaymentMain (PaymentService paymentService ) {
- this. paymentService = paymentService ;
- }
- 
- //....
-mport javax .enterprise .inject .Produces ;
-public class PaymentFactory {
- @Produces
- public PaymentService createPaymentService () {
+**Qualifiers:**
 
-@Qualifier is required when an interface has multiple implementations to choose the one you want to inject. All objects and producers in CDI have qualifiers.
-If you do not assign a qualifier, by default has the qualifier @Default and @Any. So, if you don’ t specify a qualifier, you will be assigned one.
-Meta meta annotations to define a qualifier return new CashPaymentServiceImpl ();
- }
- //.…..
-mport java.lang.annotation .Retention ;
-mport java.lang.annotation .Target;
-mport static java.lang.annotation .ElementT ype.*;
-mport static java.lang.annotation .RetentionPolicy .*;
-mport javax .inject .Qualifier ;
+```java
+// Define qualifiers
 @Qualifier
-@Retention (RUNTIME )
-@Target({TYPE, METHOD, FIELD, PARAMETER })
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface BPay {
-mport java.lang.annotation .Retention ;
-mport java.lang.annotation .Target;
-mport static java.lang.annotation .ElementT ype.*;
-mport static java.lang.annotation .RetentionPolicy .*;
-mport javax .inject .Qualifier ;
+}
 
-Use the qualifier annotations
-BPay is injected@Qualifier
-@Retention (RUNTIME )
-@Target({TYPE, METHOD, FIELD, PARAMETER })
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface CreditCard {
+}
+
+// Apply to implementations
 @BPay
-public class BPayPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+public class BPayPaymentService implements PaymentService {
+    // Implementation
 }
+
 @CreditCard
-public class CreditCardPaymentServiceImpl implements PaymentService {
- public void processPayment (BigDecimal amount, Account account ) {
- //.............
- }
+public class CreditCardPaymentService implements PaymentService {
+    // Implementation
 }
-public class PaymentMain {
 
-Multiple types can be injected into the same bean 
- private PaymentService paymentService ;
- @Inject
- public PaymentMain (@BPay PaymentService paymentService ) {
- this. paymentService = paymentService ;
- }
- 
- //....
-public class PaymentMain {
- //...
- 
- @Inject @BPay
- private PaymentService bpayService ;
- 
- @Inject @CreditCard
- private PaymentService ccService ;
- private PaymentService paymentService ;
- 
- //....
- @PostConstruct
- protected void init() {
- if(account .isBPay ()) {
- this.paymentService = this.bpayService ;
- }
- else {
- this.paymentService = this.ccService ;
- }
- }
+// Inject specific implementation
+public class PaymentProcessor {
+    @Inject @BPay
+    private PaymentService bpayService;
+    
+    @Inject @CreditCard
+    private PaymentService ccService;
+    
+    private PaymentService activeService;
+    
+    @PostConstruct
+    public void init() {
+        // Choose service based on configuration
+        if (config.isBPayEnabled()) {
+            activeService = bpayService;
+        } else {
+            activeService = ccService;
+        }
+    }
+}
+```
 
-Note : @PostConstruct annotation is used to decide which service to use. Alternatively, you can use a factory method with @Pr oduces annotation.
+**Producers:**
+
+```java
+public class PaymentFactory {
+    
+    @Produces
+    @RequestScoped
+    public PaymentService createPaymentService(Account account) {
+        if (account.isBPay()) {
+            return new BPayPaymentService();
+        } else {
+            return new CreditCardPaymentService();
+        }
+    }
+    
+    @Produces
+    @Named("maxRetries")
+    public int getMaxRetries() {
+        return 3;
+    }
+}
+
+// Injection
+public class PaymentProcessor {
+    @Inject
+    private PaymentService paymentService; // From producer
+    
+    @Inject @Named("maxRetries")
+    private int maxRetries;
+}
+```
+
+**Scopes:**
+- `@RequestScoped` - HTTP request
+- `@SessionScoped` - HTTP session
+- `@ApplicationScoped` - Application lifetime
+- `@ConversationScoped` - User conversation
+- `@Dependent` - Dependent on injecting bean (default)
 
 ---
 
-## 🔹 Q8: How would you unit test CDI with JUnit?
+### JPA/Hibernate
+
+```java
+@Entity
+@Table(name = "users")
+public class User {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(name = "username", nullable = false, unique = true, length = 50)
+    private String username;
+    
+    @Column(name = "email", nullable = false)
+    private String email;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
+    
+    @Transient
+    private String temporaryData; // Not persisted
+    
+    @Version
+    private Long version; // Optimistic locking
+}
+```
+
+---
+
+### JUnit Testing
+
+```java
+public class UserServiceTest {
+    
+    @Test
+    public void testFindUser() {
+        User user = userService.findById(1L);
+        assertNotNull(user);
+        assertEquals("john", user.getUsername());
+    }
+    
+    @Test(timeout = 100)
+    public void testPerformance() {
+        // Must complete within 100ms
+        userService.quickOperation();
+    }
+    
+    @Test(expected = UserNotFoundException.class)
+    public void testNotFound() {
+        userService.findById(999L); // Should throw exception
+    }
+    
+    @Before
+    public void setUp() {
+        // Run before each test
+    }
+    
+    @After
+    public void tearDown() {
+        // Run after each test
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+        // Run once before all tests
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+        // Run once after all tests
+    }
+    
+    @Ignore("Not implemented yet")
+    @Test
+    public void testFutureFeature() {
+        // Skipped
+    }
+}
+
+// CDI Testing
+@RunWith(CdiRunner.class)
+public class PaymentServiceTest {
+    
+    @Inject
+    private PaymentService paymentService;
+    
+    @Test
+    public void testPayment() {
+        paymentService.processPayment(new BigDecimal("100.00"), account);
+    }
+}
+```
+
+---
+
+### Servlet 3.0+
+
+```java
+@WebServlet(
+    name = "UserServlet",
+    urlPatterns = {"/users", "/user/*"},
+    initParams = {
+        @WebInitParam(name = "encoding", value = "UTF-8"),
+        @WebInitParam(name = "debug", value = "true")
+    },
+    loadOnStartup = 1
+)
+public class UserServlet extends HttpServlet {
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // Handle GET request
+    }
+}
+
+@WebFilter(
+    filterName = "AuthFilter",
+    urlPatterns = "/*",
+    initParams = @WebInitParam(name = "excludeUrls", value = "/login,/public")
+)
+public class AuthenticationFilter implements Filter {
+    
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+                        FilterChain chain) throws IOException, ServletException {
+        // Filter logic
+        chain.doFilter(request, response);
+    }
+}
+
+@WebListener
+public class AppContextListener implements ServletContextListener {
+    
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println("Application started");
+    }
+    
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("Application stopped");
+    }
+}
+```
+
+---
+
+## Interview Questions
+
+### Q1: Are annotations a compile-time or runtime feature?
 
 **Answer:**
 
-@RunWith annotation and pass “CdiRunner .class”.
-There are other annotations like @AdditionalClasses, @AdditionalPackages, @AdditionalClasspath, @Produces, @EnabledAlternatives,
-@ProducesAlternative, etc and scoping annotations like @InRequestScope, @InSessionScope, and @InConversationScope.
+Annotations can be **both compile-time and runtime features**, depending on their `@Retention` policy.
+
+**Compile-Time Annotations:**
+
+```java
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.METHOD)
+public @interface Override {
+}
+
+// Usage
+public class Child extends Parent {
+    @Override // Checked at compile-time
+    public String toString() {
+        return "Child";
+    }
+}
+```
+
+**Runtime Annotations:**
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Test {
+    long timeout() default 0L;
+}
+
+// Usage - JUnit processes at runtime
+public class MyTest {
+    @Test(timeout = 1000)
+    public void testMethod() {
+        // Test logic
+    }
+}
+```
+
+**Summary:**
+
+| Retention | When Processed | Example | Use Case |
+|-----------|---------------|---------|----------|
+| SOURCE | Compile-time | @Override, @SuppressWarnings | Compiler checks |
+| CLASS | Post-compile | Bytecode processors | Code generation |
+| RUNTIME | Runtime | @Test, @Autowired | Reflection-based frameworks |
 
 ---
 
-## 🔹 Q9: In Servlet 3.0, why is configuring your servlet via deployment descriptor file web.xml optional?
+### Q2: Are marker interfaces obsolete with annotations?
 
 **Answer:**
 
-Servlets 3.0 have come up with a set of new Annotations for the declarations of Servlet Mappings, Init-Params, Listeners, and Filters to make the code
-more readable by making the use of Deployment Descriptor (web.xml) absolutely optional.@Produces
-public PaymentService createPayment (@BPay PaymentService bpayService ,
- @CreditCard PaymentService ccService ) {
- 
- if (account .isBPay ()) {
- return bpayService; 
- } else {
- return ccService ;
- }
-@RunWith(CdiRunner .class )
-class PaymentServiceT est {
- @Inject
- PaymentService paymentService ;
- //.....
+**Mostly yes, but not entirely.** Annotations are generally preferred, but marker interfaces still have specific use cases.
+
+**Advantages of Annotations over Marker Interfaces:**
+
+1. **No Unwanted Inheritance:**
+```java
+// Marker interface - all subclasses inherit
+public interface Serializable {
 }
 
-Servlet filters, listeners, etc can be configured with annotations.
-Have you completed this unit? Then mark this unit as completed.
- Mark as Completed
-« Previous Unit Next Unit »@WebServlet (
-asyncSupported = false ,
-name = "AccountingServlet" ,
-urlPatterns = { "/acount" },
-initParams = {
- @WebInitParam (name = "param1", value = "value1" ),
- @WebInitParam (name = "param2", value = "value2" )
+public class Parent implements Serializable {
 }
-public class AccountingServlet extends HttpServlet {
- //...
+
+public class Child extends Parent {
+    // Automatically Serializable - can't prevent it
+}
+
+// Annotation - explicit per class
+@Serializable
+public class Parent {
+}
+
+public class Child extends Parent {
+    // Not automatically @Serializable
+}
+```
+
+2. **More Flexible:**
+```java
+// Annotations can have parameters
+@Cacheable(timeout = 3600, region = "users")
+public class User {
+}
+
+// Marker interfaces cannot
+```
+
+3. **Multiple Markers:**
+```java
+// Can apply multiple annotations
+@Serializable
+@Cacheable
+@Auditable
+public class User {
+}
+
+// Can only implement one marker interface per declaration
+```
+
+**When Marker Interfaces Are Still Useful:**
+
+1. **Type Safety at Compile-Time:**
+```java
+// Marker interface
+public interface Comparable<T> {
+    int compareTo(T o);
+}
+
+public <T extends Comparable<T>> void sort(List<T> list) {
+    // Compile-time type checking
+}
+
+// Annotation - no compile-time checking
+public void sort(@Sortable List<?> list) {
+    // Must check at runtime
+}
+```
+
+2. **Existing APIs:**
+```java
+// Still widely used
+Serializable, Cloneable, RandomAccess, Remote, EventListener
+```
+
+**Conclusion:**
+- **Use annotations** for new code (more flexible)
+- **Keep marker interfaces** for type constraints and existing APIs
+- **Migrate gradually** when refactoring legacy code
 
 ---
 
+### Q3: Why are annotations popular in frameworks?
 
+**Answer:**
 
-**Source**: Extracted from PDF
-**Last Updated**: 2026-06-03
+Annotations enable **declarative programming** and reduce boilerplate code significantly.
 
+**1. Reduced Configuration:**
+
+```java
+// Pre-annotations (Spring 2.x) - XML hell
+<beans>
+    <bean id="userService" class="com.myapp.UserService">
+        <property name="userDAO" ref="userDAO"/>
+    </bean>
+    <bean id="userDAO" class="com.myapp.UserDAO">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="url" value="jdbc:mysql://localhost/mydb"/>
+        <property name="username" value="root"/>
+    </bean>
+</beans>
+
+// With annotations (Spring 3.x+) - Clean and concise
+@Service
+public class UserService {
+    @Autowired
+    private UserDAO userDAO;
+}
+
+@Repository
+public class UserDAO {
+    @Autowired
+    private DataSource dataSource;
+}
+
+@Configuration
+public class AppConfig {
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl("jdbc:mysql://localhost/mydb");
+        ds.setUsername("root");
+        return ds;
+    }
+}
+```
+
+**2. Type Safety:**
+
+```java
+// XML - runtime errors
+<property name="maxConnections" value="ten"/> <!-- Oops! -->
+
+// Annotations - compile-time checking
+@Configuration(maxConnections = 10) // Type-safe
+```
+
+**3. Better IDE Support:**
+
+```java
+// Annotations - IDE can:
+// - Auto-complete
+// - Navigate to definition
+// - Refactor safely
+// - Find usages
+
+@Autowired
+private UserService userService; // Ctrl+Click to navigate
+```
+
+**4. Co-location:**
+
+```java
+// Configuration with code - easier to understand
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+}
+
+// vs separate XML file - harder to maintain
+```
+
+**When to Use XML vs Annotations:**
+
+| Use Case | Prefer |
+|----------|--------|
+| Code-specific config | Annotations |
+| Environment-specific config | XML/Properties |
+| Third-party libraries | XML |
+| Rapid prototyping | Annotations |
+| Multiple environments | XML |
+
+---
+
+### Q4: How do you create and process custom annotations?
+
+**Answer:**
+
+See the [Custom Annotations](#custom-annotations) section above for detailed examples of:
+- Creating custom annotations with `@interface`
+- Using meta-annotations (@Retention, @Target, etc.)
+- Processing annotations at runtime with reflection
+- Using dynamic proxies for method interception
 
 ---
 
 ## 📚 Related Topics
 
-- [Java Overview](../Module%2001%20-%20Java%20Overview/)
-- [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
-- [OOP Concepts](../Module%2006%20-%20OOP%20and%20FP/)
+- [Java Modifiers](./java-modifiers.md)
+- [Annotation Processing](./annotation-processing.md)
+- [Reflection API](../Module%2005%20-%20Java%20Objects/)
+- [Design Patterns](../Module%2015%20-%20Design%20Patterns/)
 
 ---
 
 ## 💡 Key Takeaways
 
-Review the questions above and ensure you understand:
-- Core concepts and their practical applications
-- Real-world scenarios and use cases
-- Best practices and common pitfalls
+**Annotations Basics:**
+- Annotations are metadata for code
+- Can be processed at compile-time, deployment-time, or runtime
+- Defined with `@interface` keyword
+- Can have elements with default values
+
+**Meta-Annotations:**
+- `@Retention` - When annotation is available (SOURCE, CLASS, RUNTIME)
+- `@Target` - Where annotation can be applied
+- `@Documented` - Include in Javadoc
+- `@Inherited` - Inherited by subclasses
+- `@Repeatable` - Can be applied multiple times
+
+**Best Practices:**
+- Use annotations for code-specific configuration
+- Use XML for environment-specific configuration
+- Keep annotations simple and focused
+- Document custom annotations thoroughly
+- Use appropriate retention policy
+- Specify target elements explicitly
+
+**Framework Usage:**
+- Spring: @Autowired, @Service, @Controller, @Configuration
+- JPA: @Entity, @Table, @Column, @Id
+- JAX-RS: @Path, @GET, @POST, @Produces
+- JUnit: @Test, @Before, @After
+- CDI: @Inject, @Qualifier, @Produces
 
 ---
 

@@ -1,239 +1,1023 @@
-# Compile-time vs Runtime
+# Compile-time vs Runtime in Java
 
 > **Module**: Java Overview  
-> **Topic**: Compile-time vs Runtime
+> **Difficulty**: Intermediate  
+> **Estimated Time**: 1-2 hours
 
 ---
 
 ## 📋 Table of Contents
 
-
-
-- [Q1: What is the difference between line A & line B in the following code snippet?](#q1)
-- [Q2: Can you think of other scenarios other than code optimization, where inspecting ](#q2)
-- [Q3: Does this happen during compile-time, runtime, or both?](#q3)
-- [Q4: Have you heard the term “ composition should be favor ed over inheritance “? If ](#q4)
-- [Q5: Can you differentiate compile-time inheritance and runtime delegation/compositi](#q5)
-
----
-
-## 🔹 Q1: What is the difference between line A & line B in the following code snippet?
-
-**Answer:**
-
-Line A, evaluates the product at compile-time, and Line B evaluates the product at runtime. If you use a Java Decompiler (e.g. jd-gui), and decompile the
-compiled ConstantFolding.class file, you will see whyas shown below .public class ConstantFolding {
- static final int number1 = 5;
- static final int number2 = 6;
- static int number3 = 5;
- static int number4 = 6;
- 
- public static void main (String [ ] args) {
- int product1 = number1 * number2; //line A
- int product2 = number3 * number4; //line B
- }
-public class ConstantFolding
-{
-static final int number1 = 5;
-static final int number2 = 6;
-static int number3 = 5;
-static int number4 = 6;
-public static void main (String [ ] args)
-{
-
-Constant folding is an optimization technique used by the Java compiler. Since final variables cannot change, they can be optimized. Java Decompiler and javap
-command are handy tool for inspecting the compiled (i.e. byte code ) code.
+1. [Introduction](#introduction)
+2. [Compile-time Concepts](#compile-time-concepts)
+3. [Runtime Concepts](#runtime-concepts)
+4. [Constant Folding](#constant-folding)
+5. [Method Overloading vs Overriding](#method-overloading-vs-overriding)
+6. [Generics & Type Erasure](#generics--type-erasure)
+7. [Annotations](#annotations)
+8. [Practical Examples](#practical-examples)
+9. [Best Practices](#best-practices)
 
 ---
 
-## 🔹 Q2: Can you think of other scenarios other than code optimization, where inspecting a compiled code is useful?
+## Introduction
 
-**Answer:**
+Understanding the distinction between **compile-time** and **runtime** is crucial for Java developers. Many language features and optimizations occur at different phases of program execution.
 
-Generics in Java are compile-time constructs, and it is very handy to inspect a compiled class file to understand and troubleshoot generics.
+### The Two Phases
 
----
+```
+┌─────────────────────────────────────────────────────────────┐
+│              JAVA PROGRAM LIFECYCLE                         │
+└─────────────────────────────────────────────────────────────┘
 
-## 🔹 Q3: Does this happen during compile-time, runtime, or both?
+COMPILE-TIME (Static)                RUNTIME (Dynamic)
+─────────────────────                ──────────────────
 
-**Answer:**
+┌──────────────────┐                ┌──────────────────┐
+│  Source Code     │                │  Bytecode        │
+│  (.java files)   │                │  (.class files)  │
+└──────────────────┘                └──────────────────┘
+        ↓                                    ↓
+┌──────────────────┐                ┌──────────────────┐
+│  javac Compiler  │                │   JVM Loader     │
+└──────────────────┘                └──────────────────┘
+        ↓                                    ↓
+┌──────────────────┐                ┌──────────────────┐
+│ • Syntax Check   │                │ • Class Loading  │
+│ • Type Check     │                │ • Verification   │
+│ • Optimization   │                │ • Execution      │
+│ • Code Gen       │                │ • GC             │
+└──────────────────┘                └──────────────────┘
+        ↓                                    ↓
+┌──────────────────┐                ┌──────────────────┐
+│  Bytecode        │                │  Program Output  │
+│  Generated       │                │  & Side Effects  │
+└──────────────────┘                └──────────────────┘
 
-int product1 = 30;
- int product2 = number3 * number4 ;
-}
-
-compile-time Vs run-time
-Method overloading: This happens at compile-time. This is also called compile-time polymorphism because the compiler must decide how to select which
-method to run based on the data types of the arguments.
-
-If the compiler were to compile the statement:
-it could see that the argument was a string literal, and generate byte code that called method #1.
-Method overriding: This happens at runtime. This is also called runtime polymorphism because the compiler does not and cannot know which method to
-call. Instead, the JVM must make the determination while the code is running.
-The method compute(..) in subclass “B” overrides the method compute(..) in super class “A”. If the compiler has to compile the following method,public class {
- public static void evaluate (String param1 ); // method #1
- public static void evaluate (int param1 ); // method #2
-}
-evaluate (“My Test Argument passed to param1 ”);
-public class A {
- public int compute (int input ) { //method #3
- return 3 * input ;
- } 
-public class B extends A {
- @Override
- public int compute (int input ) { //method #4
- return 4 * input ;
- } 
-
-The compiler would not know whether the input argument ‘reference’ is of type “A” or type “B”. This must be determined during runtime whether to call
-method #3 or method #4 depending on what type of object (i.e. instance of Class A or instance of Class B) is assigned to input variable “reference”.
-Generics (aka type checking): This happens at compile-time. The compiler checks for the type correctness of the program and translates or rewrites the
-code that uses generics into non-generic code that can be executed in the current JVM. This technique is known as “type erasure”. In other words, the compiler
-erases all generic type information contained within the angle brackets to achieve backward compatibility with JRE 1.4.0 or earlier editions.
-after compilation becomes:
-Annotations: You can have either run-time or compile-time annotations.public int evaluate (A reference, int arg2) {
- int result = reference .compute (arg2);
-}
-List<String > myList = new ArrayList <String >(10);
-List myList = new ArrayList (10);
-
-@Override is a simple compile-time annotation to catch little mistakes like typing tostring( ) instead of toString( ) in a subclass. User defined annotations can be
-processed at compile-time using the Annotation Processing T ool (APT) that comes with Java 5. In Java 6, this is included as part of the compiler itself.
-@Test is an annotation that JUnit framework uses at runtime with the help of reflection to determine which method(s) to execute within a test class.
-The above test fails if it takes more than 100ms to execute at runtime.public class B extends A {
- @Override
- public int compute (int input ){ //method #4
- return 4 * input ;
- } 
-}
-public class MyT est{
- @Test
- public void testEmptyness ( ){
- org.junit.Assert .assertT rue(getList ( ).isEmpty ( ));
- }
- private List getList ( ){
- //implemenation goes here
- }
-@Test (timeout =100)
-public void testT imeout ( ) {
- while (true); //infinite loop
-}
-
-The above code fails if it does not throw IndexOutOfBoundsException or if it throws a different exception at runtime. User defined annotations can be
-processed at runtime using the new AnnotatedElement and “Annotation” element interfaces added to the Java reflection API.
-Exceptions: You can have either runtime or compile-time exceptions.
-RuntimeException is also known as the unchecked exception indicating not required to be checked by the compiler. RuntimeException is the superclass of those
-exceptions that can be thrown during the execution of a program within the JVM. A method is not required to declare in its throws clause any subclasses of
-RuntimeException that might be thrown during the execution of a method but not caught.
-Example: NullPointerException, ArrayIndexOutOfBoundsException, etc
-Checked exceptions are verified by the compiler at compile-time that a program contains handlers like throws clause or try{} catch{} blocks for handling the
-checked exceptions, by analyzing which checked exceptions can result from execution of a method or constructor .
-Aspect Oriented Pr ogramming (AOP): Aspects can be weaved at compile-time, post-compile time, load-time or runtime.
-Compile-time: weaving is the simplest approach. When you have the source code for an application, the AOP compiler (e.g. ajc – AspectJ Compiler) 
-will compile from source and produce woven class files as output. The invocation of the weaver is integral to the AOP compilation process. The aspects
-themselves may be in source or binary form. If the aspects are required for the af fected classes to compile, then you must weave at compile-time. ? 
-Post-compile: weaving is also sometimes called binary weaving, and is used to weave existing class files and JAR files. As with compile-time weaving,
-the aspects used for weaving may be in source or binary form, and may themselves be woven by aspects.? 
-Load-time: weaving is simply binary weaving deferred until the point that a class loader loads a class file and defines the class to the JVM. T o support
-this, one or more “weaving class loaders”, either provided explicitly by the run-time environment or enabled through a “weaving agent” are required. 
-Runtime: weaving of classes that have already been loaded to the JVM.
-Inheritance – happens at compile-time, hence is static.
-Delegation or composition – happens at run-time, hence is dynamic and more flexible.@Test (expected =IndexOutOfBoundsException .class )
-public void testOutOfBounds ( ) {
- new ArrayList <Object >( ).get(1);
-}
+Happens ONCE                        Happens EVERY RUN
+Known at compile                    Determined at runtime
+Static binding                      Dynamic binding
+```
 
 ---
 
-## 🔹 Q4: Have you heard the term “ composition should be favor ed over inheritance “? If yes, what do you understand by this phrase?
+## Compile-time Concepts
 
-**Answer:**
+### What Happens at Compile-time?
 
-Inheritance is a polymorphic tool and is not a code reuse tool. Some developers tend to use inheritance for code reuse when there is no polymorphic
-relationship. The guide is that inheritance should be only used when a subclass ‘is a’ super class.
-Don’ t use inheritance just to get code reuse. If there is no ‘is a’ relationship then use composition for code reuse. Overuse of implementation inheritance
-(uses the “extends” key word) can break all the subclasses, if the super class is modified. This is due to tight coupling occurring between the parent and
-the child classes happening at compile time .
-Do not use inheritance just to get polymorphism. If there is no ‘is a’ relationship and all you want is polymorphism then use interface inheritance with
-composition, which gives you code reuse and runtime flexibility .
-This is the reason why the GoF (Gang of Four) design patterns favor composition over inheritance. The interviewer will be looking for the key terms —
-“coupling “, “static versus dynamic ” and “ happens at compile-time vs runtime ” in your answers. The runtime flexibility is achieved in composition as the
-classes can be composed dynamically at runtime either conditionally based on an outcome or unconditionally .
-Whereas an inheritance is static, as Java does not allow this natively. There are a number of projects and technologies available that will enable you to modify
-the byte code of a class after compilation, but they really aren’ t intended to use for runtime inheritance.
+```
+┌─────────────────────────────────────────────────────────────┐
+│           COMPILE-TIME ACTIVITIES                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Syntax Validation                                    │
+│     • Check for proper Java syntax                          │
+│     • Verify brackets, semicolons, keywords                 │
+│                                                              │
+│  2. ✅ Type Checking                                        │
+│     • Verify type compatibility                             │
+│     • Check method signatures                               │
+│     • Validate generic types                                │
+│                                                              │
+│  3. ✅ Method Resolution (Overloading)                      │
+│     • Determine which overloaded method to call             │
+│     • Based on parameter types                              │
+│                                                              │
+│  4. ✅ Constant Folding                                     │
+│     • Evaluate constant expressions                         │
+│     • Optimize final variable usage                         │
+│                                                              │
+│  5. ✅ Generic Type Erasure                                 │
+│     • Remove generic type information                       │
+│     • Replace with raw types or bounds                      │
+│                                                              │
+│  6. ✅ Annotation Processing                                │
+│     • Process compile-time annotations                      │
+│     • Generate additional code if needed                    │
+│                                                              │
+│  7. ✅ Bytecode Generation                                  │
+│     • Convert source to bytecode                            │
+│     • Create .class files                                   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Compile-time Errors
+
+```java
+// Syntax Error - Detected at compile-time
+public class SyntaxError {
+    public static void main(String[] args) {
+        System.out.println("Hello"  // Missing semicolon
+    }
+}
+// Error: ';' expected
+
+// Type Error - Detected at compile-time
+public class TypeError {
+    public static void main(String[] args) {
+        String text = 123;  // Cannot assign int to String
+    }
+}
+// Error: incompatible types: int cannot be converted to String
+
+// Method Not Found - Detected at compile-time
+public class MethodError {
+    public static void main(String[] args) {
+        String text = "Hello";
+        text.nonExistentMethod();  // Method doesn't exist
+    }
+}
+// Error: cannot find symbol: method nonExistentMethod()
+```
 
 ---
 
-## 🔹 Q5: Can you differentiate compile-time inheritance and runtime delegation/composition with examples and specify which Java supports?
+## Runtime Concepts
 
-**Answer:**
+### What Happens at Runtime?
 
-The term “inheritance” refers to a situation where behaviors and attributes are passed on from one object to another. The Java programming language natively
-only supports compile-time inheritance through subclassing as shown below with the keyword “ extends ”.
+```
+┌─────────────────────────────────────────────────────────────┐
+│              RUNTIME ACTIVITIES                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Class Loading                                        │
+│     • Load classes as needed                                │
+│     • Resolve dependencies                                  │
+│                                                              │
+│  2. ✅ Memory Allocation                                    │
+│     • Allocate heap memory for objects                      │
+│     • Allocate stack memory for methods                     │
+│                                                              │
+│  3. ✅ Method Resolution (Overriding)                       │
+│     • Determine which overridden method to call             │
+│     • Based on actual object type                           │
+│                                                              │
+│  4. ✅ Dynamic Binding                                      │
+│     • Resolve method calls at runtime                       │
+│     • Support polymorphism                                  │
+│                                                              │
+│  5. ✅ Exception Handling                                   │
+│     • Catch and handle exceptions                           │
+│     • Stack unwinding                                       │
+│                                                              │
+│  6. ✅ Garbage Collection                                   │
+│     • Reclaim unused memory                                 │
+│     • Prevent memory leaks                                  │
+│                                                              │
+│  7. ✅ Reflection                                           │
+│     • Inspect classes at runtime                            │
+│     • Invoke methods dynamically                            │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Runtime Errors
+
+```java
+// NullPointerException - Detected at runtime
+public class RuntimeError1 {
+    public static void main(String[] args) {
+        String text = null;
+        System.out.println(text.length());  // NPE at runtime
+    }
+}
+// Exception in thread "main" java.lang.NullPointerException
+
+// ArrayIndexOutOfBoundsException - Detected at runtime
+public class RuntimeError2 {
+    public static void main(String[] args) {
+        int[] numbers = {1, 2, 3};
+        System.out.println(numbers[5]);  // Index out of bounds
+    }
+}
+// Exception: ArrayIndexOutOfBoundsException: Index 5 out of bounds
+
+// ClassCastException - Detected at runtime
+public class RuntimeError3 {
+    public static void main(String[] args) {
+        Object obj = "Hello";
+        Integer num = (Integer) obj;  // Invalid cast
+    }
+}
+// Exception: ClassCastException: String cannot be cast to Integer
+```
+
+---
+
+## Constant Folding
+
+### What is Constant Folding?
+
+**Constant folding** is a compile-time optimization where the compiler evaluates constant expressions and replaces them with their computed values.
+
+### Example: Constant Folding in Action
+
+```java
+public class ConstantFolding {
+    // Final variables - known at compile-time
+    static final int NUMBER1 = 5;
+    static final int NUMBER2 = 6;
+    
+    // Non-final variables - evaluated at runtime
+    static int number3 = 5;
+    static int number4 = 6;
+    
+    public static void main(String[] args) {
+        // Line A - Compile-time evaluation
+        int product1 = NUMBER1 * NUMBER2;
+        
+        // Line B - Runtime evaluation
+        int product2 = number3 * number4;
+        
+        System.out.println("Product1: " + product1);
+        System.out.println("Product2: " + product2);
+    }
+}
+```
+
+### Decompiled Bytecode Analysis
+
+**Original Source:**
+```java
+int product1 = NUMBER1 * NUMBER2;  // Line A
+int product2 = number3 * number4;  // Line B
+```
+
+**Decompiled Code (using jd-gui or javap):**
+```java
+int product1 = 30;                 // Computed at compile-time!
+int product2 = number3 * number4;  // Computed at runtime
+```
+
+### Visualization
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           CONSTANT FOLDING PROCESS                          │
+└─────────────────────────────────────────────────────────────┘
+
+COMPILE-TIME:
+─────────────
+Source Code:
+    final int A = 5;
+    final int B = 6;
+    int result = A * B;
+           ↓
+    Compiler sees: 5 * 6
+           ↓
+    Compiler computes: 30
+           ↓
+Bytecode:
+    int result = 30;  ← Optimized!
+
+
+RUNTIME:
+────────
+Source Code:
+    int a = 5;
+    int b = 6;
+    int result = a * b;
+           ↓
+Bytecode:
+    iload_1        // Load 'a'
+    iload_2        // Load 'b'
+    imul           // Multiply
+    istore_3       // Store result
+           ↓
+    Computed at runtime
+```
+
+### Benefits of Constant Folding
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         BENEFITS OF CONSTANT FOLDING                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ✅ Performance                                             │
+│     • No runtime computation needed                         │
+│     • Faster execution                                      │
+│                                                              │
+│  ✅ Smaller Bytecode                                        │
+│     • Fewer instructions                                    │
+│     • Reduced class file size                               │
+│                                                              │
+│  ✅ Optimization                                            │
+│     • Compiler can make better decisions                    │
+│     • Enables further optimizations                         │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Practical Example
+
+```java
+public class ConfigConstants {
+    // These will be folded at compile-time
+    public static final int MAX_CONNECTIONS = 100;
+    public static final int TIMEOUT_SECONDS = 30;
+    public static final int BUFFER_SIZE = MAX_CONNECTIONS * 1024;
+    
+    // This will be computed at runtime
+    public static int currentConnections = 0;
+    
+    public void checkLimit() {
+        // Compile-time: if (currentConnections > 100)
+        if (currentConnections > MAX_CONNECTIONS) {
+            throw new IllegalStateException("Too many connections");
+        }
+    }
+}
+```
+
+---
+
+## Method Overloading vs Overriding
+
+### Compile-time: Method Overloading
+
+**Method overloading** is resolved at **compile-time** based on the method signature (parameter types).
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           METHOD OVERLOADING (COMPILE-TIME)                 │
+└─────────────────────────────────────────────────────────────┘
+
+Decision made by: COMPILER
+Based on: PARAMETER TYPES (at compile-time)
+Also called: STATIC POLYMORPHISM / EARLY BINDING
+
+┌──────────────────────────────────────────────────────────┐
+│  public class Calculator {                               │
+│                                                          │
+│      // Method #1                                        │
+│      public int add(int a, int b) {                     │
+│          return a + b;                                   │
+│      }                                                   │
+│                                                          │
+│      // Method #2 - Overloaded                          │
+│      public double add(double a, double b) {            │
+│          return a + b;                                   │
+│      }                                                   │
+│                                                          │
+│      // Method #3 - Overloaded                          │
+│      public String add(String a, String b) {            │
+│          return a + b;                                   │
+│      }                                                   │
+│  }                                                       │
+└──────────────────────────────────────────────────────────┘
+                         ↓
+              COMPILER DETERMINES
+                         ↓
+┌──────────────────────────────────────────────────────────┐
+│  Calculator calc = new Calculator();                     │
+│                                                          │
+│  calc.add(5, 3);        → Calls Method #1 (int)        │
+│  calc.add(5.5, 3.2);    → Calls Method #2 (double)     │
+│  calc.add("Hello", "!"); → Calls Method #3 (String)     │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Example:**
+
+```java
+public class OverloadingExample {
+    // Overloaded methods
+    public static void print(int value) {
+        System.out.println("Integer: " + value);
+    }
+    
+    public static void print(String value) {
+        System.out.println("String: " + value);
+    }
+    
+    public static void print(double value) {
+        System.out.println("Double: " + value);
+    }
+    
+    public static void main(String[] args) {
+        // Compiler determines which method to call
+        print(42);          // Calls print(int)
+        print("Hello");     // Calls print(String)
+        print(3.14);        // Calls print(double)
+        
+        // Compile-time error if no matching method
+        // print(true);     // Error: no method print(boolean)
+    }
+}
+```
+
+### Runtime: Method Overriding
+
+**Method overriding** is resolved at **runtime** based on the actual object type.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           METHOD OVERRIDING (RUNTIME)                       │
+└─────────────────────────────────────────────────────────────┘
+
+Decision made by: JVM
+Based on: ACTUAL OBJECT TYPE (at runtime)
+Also called: DYNAMIC POLYMORPHISM / LATE BINDING
+
+┌──────────────────────────────────────────────────────────┐
+│  class Animal {                                          │
+│      public void makeSound() {                           │
+│          System.out.println("Some sound");               │
+│      }                                                   │
+│  }                                                       │
+│                                                          │
+│  class Dog extends Animal {                             │
+│      @Override                                          │
+│      public void makeSound() {                          │
+│          System.out.println("Woof!");                   │
+│      }                                                   │
+│  }                                                       │
+│                                                          │
+│  class Cat extends Animal {                             │
+│      @Override                                          │
+│      public void makeSound() {                          │
+│          System.out.println("Meow!");                   │
+│      }                                                   │
+│  }                                                       │
+└──────────────────────────────────────────────────────────┘
+                         ↓
+                JVM DETERMINES AT RUNTIME
+                         ↓
+┌──────────────────────────────────────────────────────────┐
+│  Animal animal1 = new Dog();                             │
+│  Animal animal2 = new Cat();                             │
+│  Animal animal3 = new Animal();                          │
+│                                                          │
+│  animal1.makeSound();  → "Woof!" (Dog's method)         │
+│  animal2.makeSound();  → "Meow!" (Cat's method)         │
+│  animal3.makeSound();  → "Some sound" (Animal's method) │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Detailed Example:**
+
+```java
+public class OverridingExample {
+    static class Shape {
+        public double calculateArea() {
+            return 0.0;
+        }
+        
+        public void display() {
+            System.out.println("Shape area: " + calculateArea());
+        }
+    }
+    
+    static class Circle extends Shape {
+        private double radius;
+        
+        public Circle(double radius) {
+            this.radius = radius;
+        }
+        
+        @Override
+        public double calculateArea() {
+            return Math.PI * radius * radius;
+        }
+    }
+    
+    static class Rectangle extends Shape {
+        private double width, height;
+        
+        public Rectangle(double width, double height) {
+            this.width = width;
+            this.height = height;
+        }
+        
+        @Override
+        public double calculateArea() {
+            return width * height;
+        }
+    }
+    
+    public static void main(String[] args) {
+        // Compile-time type: Shape
+        // Runtime type: determined by actual object
+        
+        Shape shape1 = new Circle(5.0);      // Runtime: Circle
+        Shape shape2 = new Rectangle(4, 6);  // Runtime: Rectangle
+        Shape shape3 = new Shape();          // Runtime: Shape
+        
+        // JVM determines which calculateArea() to call at runtime
+        shape1.display();  // Uses Circle's calculateArea()
+        shape2.display();  // Uses Rectangle's calculateArea()
+        shape3.display();  // Uses Shape's calculateArea()
+    }
+}
+```
+
+### Comparison Table
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│        OVERLOADING VS OVERRIDING                               │
+├──────────────────┬─────────────────┬──────────────────────────┤
+│   Aspect         │  Overloading    │     Overriding           │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ When Resolved    │ Compile-time    │ Runtime                  │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Polymorphism     │ Static          │ Dynamic                  │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Binding          │ Early           │ Late                     │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Method Signature │ Different       │ Same                     │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Return Type      │ Can differ      │ Same or covariant        │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Access Modifier  │ Can differ      │ Same or less restrictive │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Inheritance      │ Not required    │ Required                 │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ @Override        │ Not applicable  │ Recommended              │
+├──────────────────┼─────────────────┼──────────────────────────┤
+│ Example          │ print(int)      │ Animal.makeSound()       │
+│                  │ print(String)   │ Dog.makeSound()          │
+└──────────────────┴─────────────────┴──────────────────────────┘
+```
+
+---
+
+## Generics & Type Erasure
+
+### Type Erasure: Compile-time Feature
+
+**Generics** in Java are a compile-time feature. The compiler performs **type erasure** to maintain backward compatibility with older Java versions.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              TYPE ERASURE PROCESS                           │
+└─────────────────────────────────────────────────────────────┘
+
+COMPILE-TIME:
+─────────────
+Source Code with Generics:
+    List<String> names = new ArrayList<String>();
+    names.add("Alice");
+    String name = names.get(0);
+           ↓
+    Compiler checks type safety
+           ↓
+    Compiler performs type erasure
+           ↓
+Bytecode (No Generic Information):
+    List names = new ArrayList();
+    names.add("Alice");
+    String name = (String) names.get(0);  ← Cast added
+
+
+RUNTIME:
+────────
+    JVM sees only raw types
+    No generic type information available
+    Casts are inserted by compiler
+```
+
+### Example: Before and After Type Erasure
+
+**Source Code:**
+```java
+public class GenericExample<T> {
+    private T value;
+    
+    public void setValue(T value) {
+        this.value = value;
+    }
+    
+    public T getValue() {
+        return value;
+    }
+    
+    public static void main(String[] args) {
+        GenericExample<String> example = new GenericExample<>();
+        example.setValue("Hello");
+        String result = example.getValue();
+    }
+}
+```
+
+**After Type Erasure (Decompiled):**
+```java
+public class GenericExample {
+    private Object value;  // T → Object
+    
+    public void setValue(Object value) {  // T → Object
+        this.value = value;
+    }
+    
+    public Object getValue() {  // T → Object
+        return value;
+    }
+    
+    public static void main(String[] args) {
+        GenericExample example = new GenericExample();  // No <String>
+        example.setValue("Hello");
+        String result = (String) example.getValue();  // Cast added
+    }
+}
+```
+
+### Bounded Type Parameters
+
+```java
+// Source with bounded type
+public class BoundedExample<T extends Number> {
+    private T value;
+    
+    public double doubleValue() {
+        return value.doubleValue();
+    }
+}
+
+// After type erasure
+public class BoundedExample {
+    private Number value;  // T → Number (not Object!)
+    
+    public double doubleValue() {
+        return value.doubleValue();
+    }
+}
+```
+
+### Why Type Erasure?
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           REASONS FOR TYPE ERASURE                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. ✅ Backward Compatibility                               │
+│     • Works with pre-Java 5 code                            │
+│     • No changes to JVM required                            │
+│                                                              │
+│  2. ✅ Single Bytecode                                      │
+│     • One class file for all type parameters                │
+│     • Smaller bytecode size                                 │
+│                                                              │
+│  3. ❌ Limitations                                          │
+│     • Cannot create generic arrays                          │
+│     • Cannot use instanceof with generics                   │
+│     • Type information lost at runtime                      │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Limitations Due to Type Erasure
+
+```java
+public class TypeErasureLimitations<T> {
+    // ❌ Cannot create generic array
+    // T[] array = new T[10];  // Compile error
+    
+    // ❌ Cannot use instanceof with type parameter
+    public boolean check(Object obj) {
+        // return obj instanceof T;  // Compile error
+        return false;
+    }
+    
+    // ❌ Cannot create instance of type parameter
+    public T createInstance() {
+        // return new T();  // Compile error
+        return null;
+    }
+    
+    // ✅ Workaround: Use Class<T>
+    private Class<T> type;
+    
+    public TypeErasureLimitations(Class<T> type) {
+        this.type = type;
+    }
+    
+    public T createInstanceWorkaround() throws Exception {
+        return type.getDeclaredConstructor().newInstance();
+    }
+}
+```
+
+---
+
+## Annotations
+
+### Compile-time vs Runtime Annotations
+
+Annotations can be processed at **compile-time**, **runtime**, or both.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              ANNOTATION RETENTION POLICIES                  │
+└─────────────────────────────────────────────────────────────┘
+
+@Retention(RetentionPolicy.SOURCE)
+    ↓
+Discarded by compiler
+Used for: Code generation, compile-time checks
+Examples: @Override, @SuppressWarnings
+    ↓
+Not in bytecode
+
+
+@Retention(RetentionPolicy.CLASS)
+    ↓
+Retained in bytecode
+Not available at runtime
+Used for: Bytecode processing
+Default retention policy
+    ↓
+In bytecode, not accessible via reflection
+
+
+@Retention(RetentionPolicy.RUNTIME)
+    ↓
+Retained in bytecode
+Available at runtime
+Used for: Reflection, frameworks
+Examples: @Autowired, @Entity, @Test
+    ↓
+Accessible via reflection
+```
+
+### Examples
+
+#### 1. Compile-time Annotation: @Override
+
+```java
 public class Parent {
- public String saySomething ( ) {
- return “Parent is called ”;
- }
+    public void display() {
+        System.out.println("Parent");
+    }
 }
 
-A call to saySomething( ) method on the class “Child” will return “Parent is called, Child is called” because the Child class inherits “Parent is called” from the
-class Parent. The keyword “super” is used to call the method on the “Parent” class. Runtime inheritance refers to the ability to construct the parent/child
-hierarchy at runtime. Java does not natively support runtime inheritance, but there is an alternative concept known as “delegation” or “composition”, which
-refers to constructing a hierarchy of object instances at runtime. This allows you to simulate runtime inheritance. In Java, delegation/composition is typically
-achieved as shown below:
-The Child class delegates the call to the Parent class. Composition can be achieved as follows:public class Child extends Parent {
- @Override
- public String saySomething ( ) {
- return super .saySomething ( ) + “, Child is called ”;
- }
+public class Child extends Parent {
+    @Override  // Compile-time check
+    public void display() {  // Correct spelling
+        System.out.println("Child");
+    }
+    
+    // @Override  // Compile error!
+    // public void displya() {  // Typo - not overriding
+    //     System.out.println("Child");
+    // }
 }
-public class Parent {
- public String saySomething ( ) {
- return “Parent is called ”;
- }
-}
-public class Child {
- public String saySomething ( ) {
- return new Parent ( ).saySomething ( ) + “, Child is called ”;
- }
+```
+
+#### 2. Runtime Annotation: Custom Example
+
+```java
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+
+// Define runtime annotation
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Test {
+    String value() default "";
 }
 
-Have you completed this unit? Then mark this unit as completed.
- Mark as Completed
-« Previous Unit Next Unit »public class Child {
- private Parent parent = null;
- public Child ( ){
- this.parent = new Parent ( );
- }
- public String saySomething ( ) {
- return this.parent .saySomething ( ) + “, Child is called ”;
- }
+// Use annotation
+public class TestRunner {
+    @Test("Addition test")
+    public void testAdd() {
+        System.out.println("Testing addition");
+    }
+    
+    @Test("Subtraction test")
+    public void testSubtract() {
+        System.out.println("Testing subtraction");
+    }
+    
+    public void notATest() {
+        System.out.println("Not a test");
+    }
+    
+    // Runtime processing
+    public static void main(String[] args) throws Exception {
+        TestRunner runner = new TestRunner();
+        Class<?> clazz = runner.getClass();
+        
+        // Reflection - available at runtime
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Test.class)) {
+                Test test = method.getAnnotation(Test.class);
+                System.out.println("Running: " + test.value());
+                method.invoke(runner);
+            }
+        }
+    }
+}
+```
 
 ---
 
+## Practical Examples
 
+### Example 1: Compile-time Constant Optimization
 
-**Source**: Extracted from PDF
-**Last Updated**: 2026-06-03
+```java
+public class PerformanceExample {
+    // Compile-time constants
+    private static final int ITERATIONS = 1000000;
+    private static final double PI = 3.14159;
+    
+    public static void main(String[] args) {
+        long start, end;
+        
+        // Test 1: Compile-time constant
+        start = System.nanoTime();
+        for (int i = 0; i < ITERATIONS; i++) {
+            double area = PI * 5 * 5;  // Computed at compile-time
+        }
+        end = System.nanoTime();
+        System.out.println("Constant: " + (end - start) + " ns");
+        
+        // Test 2: Runtime variable
+        double pi = 3.14159;
+        start = System.nanoTime();
+        for (int i = 0; i < ITERATIONS; i++) {
+            double area = pi * 5 * 5;  // Computed at runtime
+        }
+        end = System.nanoTime();
+        System.out.println("Variable: " + (end - start) + " ns");
+    }
+}
+```
 
+### Example 2: Polymorphism Timing
+
+```java
+public class PolymorphismExample {
+    static class Animal {
+        public int compute(int x) {
+            return x * 2;
+        }
+    }
+    
+    static class Dog extends Animal {
+        @Override
+        public int compute(int x) {
+            return x * 3;
+        }
+    }
+    
+    public static void main(String[] args) {
+        // Compile-time type: Animal
+        // Runtime type: determined by object
+        Animal animal = Math.random() > 0.5 ? new Dog() : new Animal();
+        
+        // JVM determines at runtime which compute() to call
+        int result = animal.compute(10);
+        System.out.println("Result: " + result);
+        // Output: 20 or 30 (depends on runtime condition)
+    }
+}
+```
+
+### Example 3: Generic Type Safety
+
+```java
+public class GenericSafetyExample {
+    public static void main(String[] args) {
+        // Compile-time type safety
+        List<String> names = new ArrayList<>();
+        names.add("Alice");
+        names.add("Bob");
+        // names.add(123);  // Compile error: type mismatch
+        
+        // Runtime: no generic information
+        List rawList = names;  // Raw type
+        rawList.add(123);  // No compile error (warning only)
+        
+        // Runtime error when retrieving
+        try {
+            String name = names.get(2);  // ClassCastException
+        } catch (ClassCastException e) {
+            System.out.println("Runtime error: " + e.getMessage());
+        }
+    }
+}
+```
 
 ---
 
-## 📚 Related Topics
+## Best Practices
 
-- [Java Overview](../Module%2001%20-%20Java%20Overview/)
-- [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
-- [OOP Concepts](../Module%2006%20-%20OOP%20and%20FP/)
+### 1. Use Final for Constants
+
+```java
+// ✅ Good: Compile-time constant
+public static final int MAX_SIZE = 100;
+
+// ❌ Avoid: Runtime variable
+public static int maxSize = 100;
+```
+
+### 2. Leverage @Override
+
+```java
+// ✅ Good: Catch typos at compile-time
+@Override
+public String toString() {
+    return "MyClass";
+}
+
+// ❌ Risky: Typo not caught
+public String tostring() {  // Wrong method name
+    return "MyClass";
+}
+```
+
+### 3. Use Generics for Type Safety
+
+```java
+// ✅ Good: Type-safe at compile-time
+List<String> names = new ArrayList<>();
+names.add("Alice");
+String name = names.get(0);  // No cast needed
+
+// ❌ Avoid: Raw types
+List names = new ArrayList();
+names.add("Alice");
+String name = (String) names.get(0);  // Cast required, error-prone
+```
+
+### 4. Understand Polymorphism Costs
+
+```java
+// Compile-time binding (faster)
+public final class FastClass {
+    public final void compute() {
+        // Method cannot be overridden
+        // JVM can inline this
+    }
+}
+
+// Runtime binding (slower)
+public class SlowClass {
+    public void compute() {
+        // Method can be overridden
+        // JVM must check at runtime
+    }
+}
+```
 
 ---
 
-## 💡 Key Takeaways
+## Summary
 
-Review the questions above and ensure you understand:
-- Core concepts and their practical applications
-- Real-world scenarios and use cases
-- Best practices and common pitfalls
+### Key Takeaways
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              COMPILE-TIME VS RUNTIME                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  COMPILE-TIME:                                              │
+│  ✅ Syntax checking                                         │
+│  ✅ Type checking                                           │
+│  ✅ Method overloading resolution                           │
+│  ✅ Constant folding                                        │
+│  ✅ Generic type erasure                                    │
+│  ✅ Compile-time annotations                                │
+│                                                              │
+│  RUNTIME:                                                   │
+│  ✅ Class loading                                           │
+│  ✅ Memory allocation                                       │
+│  ✅ Method overriding resolution                            │
+│  ✅ Dynamic binding                                         │
+│  ✅ Exception handling                                      │
+│  ✅ Garbage collection                                      │
+│  ✅ Runtime annotations                                     │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Decision Matrix
+
+| Feature | Compile-time | Runtime |
+|---------|-------------|---------|
+| Method Overloading | ✅ | ❌ |
+| Method Overriding | ❌ | ✅ |
+| Constant Folding | ✅ | ❌ |
+| Generics | ✅ | ❌ (erased) |
+| Polymorphism | Static | Dynamic |
+| Type Checking | ✅ | Partial |
+| Performance | Optimized | Variable |
+
+### Next Steps
+
+1. ✅ Understand compile-time optimizations
+2. ✅ Master polymorphism concepts
+3. ➡️ Study [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
+4. ➡️ Learn [Generics in Detail](../Module%2007%20-%20Generics%20and%20Collections/)
+5. ➡️ Explore [Annotations](../Module%2003%20-%20Modifiers%20Annotations%20Initializers/)
 
 ---
 
-**[⬆ Back to Top](#)**
+**[← Back to Java Overview](java-overview.md)** | **[Module Index](README.md)** | **[Next: Java Data Types →](../Module%2002%20-%20Java%20Data%20Types/)**

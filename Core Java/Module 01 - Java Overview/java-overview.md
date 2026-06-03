@@ -1,362 +1,1063 @@
 # Java Overview & Fundamentals
 
 > **Module**: Java Overview  
-> **Topic**: Java Overview & Fundamentals
+> **Difficulty**: Beginner to Intermediate  
+> **Estimated Time**: 2-3 hours
 
 ---
 
 ## 📋 Table of Contents
 
-
-
-- [Q1: Why use Java?](#q1)
-- [Q2: Is Java a 100% Object Oriented (OO) language? if yes why? and if no, why not?](#q2)
-- [Q3: What is the difference between C++ and Java?](#q3)
-- [Q4: What is the main difference between the Java platform and the other software pl](#q4)
-- [Q5: How would you differentiate JDK, JRE, JVM, and JIT?](#q5)
-- [Q6: Is it possible to convert byte code into source code?](#q6)
-- [Q7: When would you use a decompiler?](#q7)
-- [Q8: Is it possible to prevent the conversion from byte code into source code?](#q8)
-- [Q9: What are the two flavors of JVM?](#q9)
-- [Q10: How do you know in which mode your JVM is running?](#q10)
-- [Q11: What are the two different bits of JVM? What is the major limitation of 32 bit ](#q11)
-- [Q12: What are some of the JVM arguments you have used in your projects?](#q12)
-- [Q13: How do you monitor the JVMs?](#q13)
-- [Q14: What is a jar file? How does it differ from a zip file?](#q14)
-- [Q15: What do you need to develop and run Java programs? How would you go about gettin](#q15)
-- [Q16: How do you create a class under a package in Java? What is the first statement i](#q16)
-- [Q17: What do you need to do to run a class with a main( ) method in a package? For ex](#q17)
+1. [Introduction to Java](#introduction-to-java)
+2. [Why Choose Java?](#why-choose-java)
+3. [Java Platform Architecture](#java-platform-architecture)
+4. [JDK, JRE, JVM & JIT Explained](#jdk-jre-jvm--jit-explained)
+5. [Is Java 100% Object-Oriented?](#is-java-100-object-oriented)
+6. [Java vs C++](#java-vs-c)
+7. [Java Compilation & Execution](#java-compilation--execution)
+8. [JVM Modes & Configuration](#jvm-modes--configuration)
+9. [Java Packages & JAR Files](#java-packages--jar-files)
+10. [Best Practices](#best-practices)
 
 ---
 
-## 🔹 Q1: Why use Java?
+## Introduction to Java
 
-**Answer:**
+Java is a **high-level, class-based, object-oriented programming language** designed to have as few implementation dependencies as possible. It follows the principle of **"Write Once, Run Anywhere" (WORA)**, meaning compiled Java code can run on all platforms that support Java without recompilation.
 
-One needs to use the best tool for the job, whether that tool is Java or not. When choosing a technology to solve your business problems, you need to
-consider many factors like development cost, infrastructure cost, ongoing support cost, robustness, flexibility, security, performance, etc.
-— Java provides client technologies, server technologies, and integration technologies to solve small scale to very large scale business problems.
-— Firstly, Java is a proven and matured technology used in many mission critical projects, and there are millions of developers world wide, thousands of
-frameworks, tools, and libraries for it, and millions of sites, blogs, and books to find relevant information.
-— The emergence of open-source technologies has truly made Java a powerful competitor in the server and integration technology space. You can always find
-a proven framework that best solves your business problems.
-— The platform also comes with a rich set of APIs. This means developers spend less time writing support libraries, and more time developing content for their
-applications.
-— Built-in support for multi-threading, socket communication, and automatic memory management (i.e. automatic garbage collection).
+### Key Characteristics
 
----
-
-## 🔹 Q2: Is Java a 100% Object Oriented (OO) language? if yes why? and if no, why not?
-
-**Answer:**
-
-I would say Java is not 100% object oriented, but it embodies practical OO concepts. There are 6 qualities to make a programming language to be pure
-object oriented. They are:
-1. Encapsulation – data hiding and modularity .
-2. Inheritance – you define new classes and behavior based on existing classes to obtain code reuse.
-3. Polymorphism – the same message sent to different objects results in behavior that’ s dependent on the nature of the object receiving the message.
-4. All predefined types are objects .
-5. All operations are performed by sending messages to objects .
-6. All user defined types are objects .
-points 1- 3, stands for PIE ( Polymorphism, Inheritance, and Encapsulation).
-Reason #1: The main reason why Java cannot be considered 100% OO is due to its existence of 8 primitive variables (i.e. violates point number 4) like int,
-long, char, float, etc. These data types have been excused from being objects for simplicity and to improve performance. Since primitive data types are not
-objects, they don’ t have any qualities such as inheritance or polymorphism. Even though Java provides immutable wrapper classes like Integer, Long, Character ,
-etc representing corresponding primitive data as objects, the fact that it allowed non object oriented primitive variables to exist, makes it not fully OO.
-Reason #2: Another reason why Java is considered not full OO is due to its existence of static methods and variables (i.e. violates point number 5). Since static
-methods can be invoked without instantiating an object, we could say that it breaks the rules of encapsulation.
-
-Reason #3: Java does not support multiple class inheritance to solve the diamond problem because different classes may have different variables with same
-name that may be contradicted and can cause confusions and result in errors. In Java, any class can extend only one other class, but can implement multiple
-interfaces.
-We could also ar gue that Java is not 100% OO according to this point of view. But Java realizes some of the key benefits of multiple inheritance through its
-support for multiple interface inheritance and in Java 8, you can have multiple behavior (not state) inheritance as you can have default methods in interfaces.
-Reason #4: Operator overloading is not possible in Java except for string concatenation and addition operations. String concatenation and addition example,
-Since this is a kind of polymorphism for other operators like * (multiplication), / (division), or – (subtraction), and Java does not support this, hence one could
-debate that Java is not 100% OO. Working with a primitive in Java is more elegant than working with an object like BigDecimal. For example,
-What happens in Java when you have to deal with large decimal numbers that must be accurate and of unlimited size and precision? You must use a
-BigDecimal. BigDecimal looks verbose for larger calculations without the operator overloading as shown below:System.out.println (1 + 2 + ”3”);//outputs 33
-System.out.println (“1” + 2 + 3); //outputs 123
-nt a,b, c;
-/without operator overloading
-a = b – c * d
-BigDecimal b = new BigDecimal (“25.24 ”);
-BigDecimal c = new BigDecimal (“3.99”);
-
-Also, the last line above is wrong. The rules of precedence have changed. With chained method calls like this, evaluation is strictly left-to-right. Instead of
-subtracting the product of c and d from b, we are multiplying the difference between b and c by d. We would have to rewrite the last line as shown below:
-So, it is error prone as well. Another point is that the BigDecimal class is immutable and, as such, each of the “operator” methods returns a new instance. In
-future Java versions, you may have operator overloading for BigDecimal, and it would make your code more readable as shown below .
+```
+┌─────────────────────────────────────────────────────────┐
+│              JAVA KEY CHARACTERISTICS                    │
+├─────────────────────────────────────────────────────────┤
+│  ✓ Platform Independent    ✓ Object-Oriented            │
+│  ✓ Secure                  ✓ Robust                     │
+│  ✓ Multi-threaded          ✓ High Performance           │
+│  ✓ Distributed             ✓ Dynamic                    │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🔹 Q3: What is the difference between C++ and Java?
+## Why Choose Java?
 
-**Answer:**
+### Business & Technical Considerations
 
-Both C++ and Java use similar syntax and are Object Oriented, but:
-1) Java does not support pointers. Pointers are inherently tricky to use and troublesome.
-2) Java does not support multiple inheritances because it causes more problems than it solves. Instead Java supports multiple interface behavior inheritance (In
-Java 8, you can have interfaces with default & static methods, but can’ t have state), which allows an object to inherit many method signatures from different
-interfaces with the condition that the inheriting object must implement those inherited methods.
-3) Java does not support destructors but rather adds a finalize() method. Finalize methods are invoked by the garbage collector prior to reclaiming the memory
-occupied by the object, which has the finalize() method. This means you do not know when the objects are going to be finalized. Avoid using finalize() method
-to release non-memory resources like file handles, sockets, database connections etc because Java has only a finite number of these resources and you do not
-know when the garbage collection is going to kick in to release these resources through the finalize() method.BigDecimal d = new BigDecimal (“2.78”);
-BigDecimal a = b.subtract (c).multiply (d); //verbose and wrong
-BigDecimal a = b.subtract (c.multiply (d)); //correct
-BigDecimal a = b – (c * d); //much better
+When choosing Java for your project, consider these factors:
 
-4) Java does not include structures or unions. Java make use of the Java Collection framework.
-5) All the code in Java program is encapsulated within classes therefore Java does not have global variables or functions.
-6) C++ requires explicit memory management, while Java includes automatic garbage collection.
+#### ✅ Advantages
 
----
+1. **Mature Ecosystem**
+   - Millions of developers worldwide
+   - Thousands of frameworks and libraries
+   - Extensive documentation and community support
 
-## 🔹 Q4: What is the main difference between the Java platform and the other software platforms?
+2. **Enterprise Ready**
+   - Proven in mission-critical applications
+   - Strong security features
+   - Excellent scalability
 
-**Answer:**
+3. **Rich API**
+   - Comprehensive standard library
+   - Built-in support for networking, I/O, data structures
+   - Reduces development time
 
-Java platform is a software-only platform, which runs on top of other hardware-based platforms like Unix, Windows, Mac OS, etc.
-Java platform
-The Java platform has 2 components:
-1) Java Virtual Machine (JVM) – ‘JVM’ is a software that can be ported onto various hardware platforms. Byte codes are the machine language of the JVM.
-2) Java Application Programming Interface (Java API) – is nothing but a set of classes and interfaces that come with the JDK. All these classes are written using
-the Java language and contains a library of methods for common programming tasks like manipulating strings and data structures, networking, file transfer, etc.
-The source *.java files are in the src.zip archive and the executable *.class files are in the rt.jar archive.
+4. **Automatic Memory Management**
+   - Garbage collection handles memory cleanup
+   - Reduces memory leaks
+   - Simplifies development
 
----
+5. **Multi-threading Support**
+   - Built-in concurrency utilities
+   - Thread-safe collections
+   - Executor framework for task management
 
-## 🔹 Q5: How would you differentiate JDK, JRE, JVM, and JIT?
+### Real-World Use Cases
 
-**Answer:**
-
-There is no better way to get the big picture than a diagram.
-
-JDK, JRE, JVM, and JIT
-1) JDK: You can download a copy of the Java Development Kit (JDK) for your operating system like Unix, Windows, etc.
-
-2) JRE: Java Runtime Environment is an implementation of the JVM. The JDK typically includes the Java Runtime Environment (JRE) which contains the
-virtual machine and other dependencies to run Java applications.
-3) JIT: A JIT is a code generator that converts Java byte code into native machine code. Java programs invoked with a JIT generally run much faster than when
-the byte code is executed by the interpreter. The JIT compiler is a standard tool that is part of the JVM and invoked whenever you use the Java interpreter
-command. You can disable the JIT compiler using the -Djava.compiler=NONE option to the Java VM. You might want to disable the JIT compiler if you are
-running the Java VM in remote debug mode, or if you want to see source line numbers instead of the label (Compiled Code) in your Java stack traces.
-
----
-
-## 🔹 Q6: Is it possible to convert byte code into source code?
-
-**Answer:**
-
-Yes. A Java decompiler is a computer program capable of reversing the work done by a compiler. In essence, it can convert back the byte code (i.e. the
-.class file) into the source code (i.e the .java file). There are many decompilers that exist today, but the most widely used JD – Java Decompiler is available both
-as stand-alone GUI program and as an eclipse plug-in.
-
----
-
-## 🔹 Q7: When would you use a decompiler?
-
-**Answer:**
-
-1) When you have *.class files and you do not have access to the source code (*.java files). For example, some vendors do not ship the source code for java
-class files or you accidentally lost (e.g deleted) your source code, in which case you can use the Java decompiler to reconstruct the source file.
-2) Another scenario is that if you generated your .class files from another language like a groovy script, using the groovyc command, you may want to use a
-Java decompiler to inspect the Java source code for the groovy generated class files to debug or get a better understanding of groovy integration with Java.
-3) To ensure that your code is adequately obfuscated before releasing it into the public domain.
-4) Fixing and debugging .class files when developers are slow to respond to questions that need immediate answers. T o learn both Java and how the Java VM
-works.
-5) Learn and debug how code with generics has been converted after compilation.
+```
+┌──────────────────────────────────────────────────────────┐
+│                 JAVA USE CASES                           │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│  🌐 Web Applications                                     │
+│     • E-commerce platforms (Amazon, eBay)               │
+│     • Banking systems                                    │
+│     • Enterprise portals                                 │
+│                                                          │
+│  📱 Mobile Applications                                  │
+│     • Android apps (primary language)                   │
+│     • Cross-platform mobile solutions                   │
+│                                                          │
+│  🖥️  Desktop Applications                               │
+│     • IDEs (IntelliJ IDEA, Eclipse)                     │
+│     • Trading platforms                                  │
+│                                                          │
+│  ☁️  Cloud & Microservices                              │
+│     • Spring Boot microservices                         │
+│     • Cloud-native applications                         │
+│                                                          │
+│  🎮 Big Data & Analytics                                │
+│     • Hadoop ecosystem                                   │
+│     • Apache Spark                                       │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🔹 Q8: Is it possible to prevent the conversion from byte code into source code?
+## Java Platform Architecture
 
-**Answer:**
+### The Java Platform Components
 
-If you want to protect your Java class files from being decompiled, you can take a look at a Java obfuscator tool like yGuard or ProGuard, otherwise you
-will have to kiss your intellectual property good bye.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    JAVA PLATFORM                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌───────────────────────────────────────────────────┐    │
+│  │         Java Application Layer                     │    │
+│  │  (Your Java Programs: .java source files)         │    │
+│  └───────────────────────────────────────────────────┘    │
+│                         ↓                                   │
+│  ┌───────────────────────────────────────────────────┐    │
+│  │         Java API (Standard Library)                │    │
+│  │  • java.lang  • java.util  • java.io              │    │
+│  │  • java.net   • java.sql   • javax.*              │    │
+│  └───────────────────────────────────────────────────┘    │
+│                         ↓                                   │
+│  ┌───────────────────────────────────────────────────┐    │
+│  │    Java Virtual Machine (JVM)                      │    │
+│  │  • Class Loader  • Bytecode Verifier              │    │
+│  │  • Execution Engine (Interpreter + JIT)           │    │
+│  │  • Garbage Collector                               │    │
+│  └───────────────────────────────────────────────────┘    │
+│                         ↓                                   │
+│  ┌───────────────────────────────────────────────────┐    │
+│  │    Operating System (Windows, Linux, macOS)        │    │
+│  └───────────────────────────────────────────────────┘    │
+│                         ↓                                   │
+│  ┌───────────────────────────────────────────────────┐    │
+│  │         Hardware (CPU, Memory, Disk)               │    │
+│  └───────────────────────────────────────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
----
+### Platform Independence
 
-## 🔹 Q9: What are the two flavors of JVM?
+Unlike traditional compiled languages, Java achieves platform independence through bytecode:
 
-**Answer:**
+```
+Traditional Compilation (C/C++):
+┌──────────┐    ┌──────────┐    ┌──────────────┐
+│ Source   │ -> │ Compiler │ -> │ Native Code  │
+│ (.c/.cpp)│    │          │    │ (OS-specific)│
+└──────────┘    └──────────┘    └──────────────┘
 
-Client mode and server mode.
-Client mode is suited for short lived programs like stand-alone GUI applications and applets. Specially tuned to reduce application start-up time and memory
-footprint, making it well suited for client applications. For example: c:\> java -client MyProgram
-
-Server mode is suited for long running server applications, which can be active for weeks or months at a time. Specially tuned to maximize peak operating
-speed. The fastest possible operating speed is more important than fast start-up time or smaller runtime memory footprint. c:\> java -server MyProgram
-
----
-
-## 🔹 Q10: How do you know in which mode your JVM is running?
-
-**Answer:**
-
-c:\> java -version
-
----
-
-## 🔹 Q11: What are the two different bits of JVM? What is the major limitation of 32 bit JVM?
-
-**Answer:**
-
-JVMs are available in 32 bits (-d32 JVM argument) and 64 bits (-d64 JVM argument). 64-bit JVMs are typically only available from JDK 5.0 onwards. It
-is recommended that the 32-bit be used as the default JVM and 64-bit used if more memory is needed than what can be allocated to a 32-bit JVM. The Oracle
-Java VM cannot grow beyond ~2GB on a 32bit server machine even if you install more than 2GB of RAM into your server. It is recommended that a 64bit OS
-with larger memory hardware is used when larger heap sizes are required. For example, >4GB is assigned to the JVM and used for deployments of >250
-concurrent or >2500 casual users.
-
----
-
-## 🔹 Q12: What are some of the JVM arguments you have used in your projects?
-
-**Answer:**
-
-To set a system property that can be retrieved using System.getPropety(“name”);
-To set the classpath: -cp or -classpath
-To set minimum and maximum heap sizes:$java -Dname =value MyApp
-$java -cp library .jar MyApp
-
-To set garbage collection options:
-
----
-
-## 🔹 Q13: How do you monitor the JVMs?
-
-**Answer:**
-
-Since Java SE 5.0, the JRE provides a mean to manage and monitor the Java Virtual Machine. It comes in two flavors:
-JVM Monitoring$java -Xms1024 -Xmx1024 MyApp
-$ java -Xincgc MyApp
-
-1) The JVM has built-in instrumentation that enables you to monitor and manage it using Java Management eXtension (JMX). You can also monitor
-instrumented applications with JMX. T o start a Java application with the management agent for local monitoring, set the following JVM argument when you run
-your application.
-To start the JConsole:
-2) The other is a Simple Network Management Pr otocol (SNMP) agent that builds upon the management and monitoring API of the Java SE platform, and
-exposes the same information through SNMP. SNMP events can be sent Splunk. Nagios, Zenoss, OpenNMS, and netsnmp are some of the popular SNMP tools.
+Java Compilation & Execution:
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐
+│ Source   │ -> │  javac   │ -> │ Bytecode │ -> │   JVM   │
+│ (.java)  │    │ Compiler │    │ (.class) │    │ (Any OS)│
+└──────────┘    └──────────┘    └──────────┘    └─────────┘
+                                                       ↓
+                                              ┌────────────────┐
+                                              │ Native Machine │
+                                              │     Code       │
+                                              └────────────────┘
+```
 
 ---
 
-## 🔹 Q14: What is a jar file? How does it differ from a zip file?
+## JDK, JRE, JVM & JIT Explained
 
-**Answer:**
+### Component Hierarchy
 
-The jar stands for Java ARchive. A jar file usually has a file name extension .jar. It mainly contains Java class files but any types of files can be included.
-For example, XML files, properties files, HTML files, image files, binary files, etc. You can use the “jar” application utility bundled inside /JDK1.6.0/jre/bin to
-create, extract, and view its contents. You can also use any zip file utility program to view its contents. A jar file cannot contain other jar files., whereas a war
-or ear file used in Java EE.
-Basically, a jar file is same as a zip file, except that it contains a MET A-INF directory to store meta data or attributes. The most known file is MET A-
-INF/MANIFEST .MF. When you create a JAR file, it automatically receives a default manifest file. There can be only one manifest file in an archive. Most uses
-of JAR files beyond simple archiving and compression require special information to be in the manifest file. For example,
-— If you have an application bundled in a JAR file, you need some way to indicate which class within the JAR file is your application’ s entry point. The entry
-point is the class having a method with signature public static void main(String[ ] ar gs). For example, Main-Class: T est.class
-— A package within a JAR file can be optionally sealed, which means that all classes defined in that package must be archived in the same JAR file. You might
-want to seal a package, for example, to ensure version consistency among the classes in your software or as a security measure.$JAVA_HOME /bin/java -Dcom .sun.management .jmxremote MyApp
-$JAVA_HOME /bin/jconsole
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    JDK (Java Development Kit)               │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │  Development Tools:                                    │ │
+│  │  • javac (compiler)    • javadoc (documentation)      │ │
+│  │  • jar (archiver)      • jdb (debugger)               │ │
+│  │  • javap (disassembler)                               │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │           JRE (Java Runtime Environment)               │ │
+│  │  ┌─────────────────────────────────────────────────┐  │ │
+│  │  │  Java Class Libraries (Java API)                 │  │ │
+│  │  │  • Core libraries (java.*, javax.*)              │  │ │
+│  │  │  • Extension libraries                           │  │ │
+│  │  └─────────────────────────────────────────────────┘  │ │
+│  │                                                         │ │
+│  │  ┌─────────────────────────────────────────────────┐  │ │
+│  │  │        JVM (Java Virtual Machine)                │  │ │
+│  │  │  ┌───────────────────────────────────────────┐  │  │ │
+│  │  │  │  Class Loader Subsystem                   │  │  │ │
+│  │  │  │  • Bootstrap  • Extension  • Application  │  │  │ │
+│  │  │  └───────────────────────────────────────────┘  │  │ │
+│  │  │  ┌───────────────────────────────────────────┐  │  │ │
+│  │  │  │  Runtime Data Areas                       │  │  │ │
+│  │  │  │  • Heap  • Stack  • Method Area           │  │  │ │
+│  │  │  └───────────────────────────────────────────┘  │  │ │
+│  │  │  ┌───────────────────────────────────────────┐  │  │ │
+│  │  │  │  Execution Engine                         │  │  │ │
+│  │  │  │  • Interpreter                            │  │  │ │
+│  │  │  │  • JIT Compiler (Just-In-Time)           │  │  │ │
+│  │  │  │  • Garbage Collector                      │  │  │ │
+│  │  │  └───────────────────────────────────────────┘  │  │ │
+│  │  └─────────────────────────────────────────────────┘  │ │
+│  └───────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
 
-Name: myCompany/myPackage/
-Sealed: true
+### Detailed Explanations
+
+#### 1. **JDK (Java Development Kit)**
+
+The complete development environment for Java applications.
+
+**Components:**
+- **javac**: Compiles `.java` source files to `.class` bytecode
+- **java**: Launches Java applications
+- **javadoc**: Generates API documentation
+- **jar**: Creates and manages JAR archives
+- **jdb**: Java debugger
+- **javap**: Class file disassembler
+
+**Example Usage:**
+```bash
+# Compile Java source
+javac HelloWorld.java
+
+# Run Java application
+java HelloWorld
+
+# Create JAR file
+jar cvf myapp.jar *.class
+
+# View bytecode
+javap -c HelloWorld.class
+```
+
+#### 2. **JRE (Java Runtime Environment)**
+
+The runtime environment needed to run Java applications.
+
+**Includes:**
+- JVM (Java Virtual Machine)
+- Core libraries (Java API)
+- Supporting files
+
+**Use Case:** End users who only need to run Java applications (not develop them) only need the JRE.
+
+#### 3. **JVM (Java Virtual Machine)**
+
+The engine that executes Java bytecode.
+
+**Key Responsibilities:**
+- Load bytecode
+- Verify bytecode
+- Execute bytecode
+- Manage memory (Garbage Collection)
+- Provide runtime environment
+
+#### 4. **JIT (Just-In-Time Compiler)**
+
+Improves performance by compiling bytecode to native machine code at runtime.
+
+**How JIT Works:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              JIT COMPILATION PROCESS                     │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. Initial Execution (Interpreted)                     │
+│     ┌──────────┐         ┌─────────────┐              │
+│     │ Bytecode │ ──────> │ Interpreter │              │
+│     └──────────┘         └─────────────┘              │
+│                                 ↓                       │
+│                          Slow Execution                 │
+│                                                          │
+│  2. Hotspot Detection                                   │
+│     JVM identifies frequently executed code             │
+│     (methods called multiple times)                     │
+│                                                          │
+│  3. JIT Compilation                                     │
+│     ┌──────────┐         ┌──────────┐                 │
+│     │ Bytecode │ ──────> │   JIT    │                 │
+│     │ (Hotspot)│         │ Compiler │                 │
+│     └──────────┘         └──────────┘                 │
+│                                 ↓                       │
+│                          ┌─────────────┐               │
+│                          │ Native Code │               │
+│                          │  (Cached)   │               │
+│                          └─────────────┘               │
+│                                 ↓                       │
+│                          Fast Execution                 │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+**JIT Optimization Levels:**
+- **C1 (Client Compiler)**: Fast compilation, moderate optimization
+- **C2 (Server Compiler)**: Slower compilation, aggressive optimization
+
+**Disable JIT (for debugging):**
+```bash
+java -Djava.compiler=NONE MyApplication
+```
 
 ---
 
-## 🔹 Q15: What do you need to develop and run Java programs? How would you go about getting started?
+## Is Java 100% Object-Oriented?
 
-**Answer:**
+### The Verdict: **No, but it's pragmatically OO**
 
-Step 1: Download and install the Java Development Kit (JDK) SE (Standard Edition) for your operating system (e.g. Windows, Linux, etc) and processor
-(32 bit, 64 bit, etc) .
-Step 2: Configure your environment. The first environment variable you need to set is the JAVA_HOME .
-The second environment variable is PATH.
-Step 3: Verify your configurations with the following commands:JAVA_HOME =C:\DEV \java\jdk-1.6.0_1 1 #on windows
-export JAVA_HOME =/usr/java/jdk-1.6.0_1 1 #on Unix
-PATH=%JAVA_HOME %\bin; #on windows
-export PATH=$PATH:$JAVA_HOME /bin #on Unix
-echo %JAVA_HOME % #windows
-echo %PATH% #windows
-$ echo $JAVA_HOME #Unix
-$ echo $PATH #Unix
+### Six Criteria for Pure OOP
 
-Step 5: Verify your installation with
+```
+┌─────────────────────────────────────────────────────────┐
+│         PURE OBJECT-ORIENTED LANGUAGE CRITERIA          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. ✅ Encapsulation                                    │
+│     Data hiding and modularity                          │
+│                                                          │
+│  2. ✅ Inheritance                                      │
+│     Code reuse through class hierarchies                │
+│                                                          │
+│  3. ✅ Polymorphism                                     │
+│     Same interface, different implementations           │
+│                                                          │
+│  4. ❌ All predefined types are objects                │
+│     Java has primitive types (int, char, etc.)          │
+│                                                          │
+│  5. ❌ All operations via message passing               │
+│     Java has static methods                             │
+│                                                          │
+│  6. ✅ All user-defined types are objects               │
+│     All classes extend Object                           │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
 
----
+### Why Java Isn't 100% OO
 
-## 🔹 Q16: How do you create a class under a package in Java? What is the first statement in Java?
+#### Reason 1: Primitive Types
 
-**Answer:**
+Java has 8 primitive types that are not objects:
 
-ou can create a class under a package as follows with the package keyword, which is the first keyword in any Java program followed by the import
-statements. The java.lang package is imported implicitly by default and all the other packages must be explicitly imported. The core Java packages like
-java.lang.*, java.net.*, java.io*, etc and its class files are distributed in the archive file named rt.jar .
+```java
+// Primitives (NOT objects)
+byte    b = 127;
+short   s = 32767;
+int     i = 2147483647;
+long    l = 9223372036854775807L;
+float   f = 3.14f;
+double  d = 3.14159265359;
+char    c = 'A';
+boolean bool = true;
 
----
+// Wrapper Classes (Objects)
+Byte    bObj = Byte.valueOf(b);
+Short   sObj = Short.valueOf(s);
+Integer iObj = Integer.valueOf(i);
+Long    lObj = Long.valueOf(l);
+Float   fObj = Float.valueOf(f);
+Double  dObj = Double.valueOf(d);
+Character cObj = Character.valueOf(c);
+Boolean boolObj = Boolean.valueOf(bool);
+```
 
-## 🔹 Q17: What do you need to do to run a class with a main( ) method in a package? For example: Say, you have a class named Pet in a project folder
-C:\projects\T est\src and package named com.xyz.client, will you be able to compile and run it as it is?
+**Why Primitives Exist:**
+- **Performance**: Primitives are faster and use less memory
+- **Simplicity**: Easier to use for basic operations
 
-**Answer:**
+**Memory Comparison:**
+```
+┌──────────────────────────────────────────────────────┐
+│         MEMORY USAGE: PRIMITIVE VS OBJECT            │
+├──────────────────────────────────────────────────────┤
+│                                                       │
+│  int primitive:        4 bytes                       │
+│  Integer object:       16 bytes (object overhead)    │
+│                                                       │
+│  Array of 1000 ints:   4,000 bytes                  │
+│  Array of 1000 Integer: 16,000+ bytes               │
+│                                                       │
+└──────────────────────────────────────────────────────┘
+```
 
-Step 1: Write source code “Pet.java” as shown below$ javac -version
-$ java -version
-package com.xyz.client; 
-mport java.io.File;
-mport java.net.URL ;
-package com.xyz.client ;
+#### Reason 2: Static Methods
 
-Step 2: The source code can be compiled into byte code i.e. Pet.class file as shown below:
-Note : The compiled byte code file Pet.class will be saved in the folder C:\projects\T est\bin\com\xyz\client.
-Step 3: If you run it inside where the Pet.class is stored, the answer is yes.
-The Pet.class file will be found since com.xyz.client.Pet class file is in the projects\T est\bin folder. If you run it in any other folder say c:\
-The answer is no, and you will get the following exception: Exception in thread “main” java.lang.NoClassDefFoundErr or: com/xyz/client/Pet. T o fix this, you
-need to tell how to find the Pet.class by setting or providing the classpath. How can you do that? One of the following ways:
-1) Set the operating system CLASSP ATH environment variable to have the project folder c:\projects\T est\bin.public class Pet {
- public static void main (String [ ] args) {
- System.out.println ("I am found in the classpath" );
- }
+Static methods can be called without creating an object:
+
+```java
+public class MathUtils {
+    // Static method - no object needed
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    // Instance method - object required
+    public int multiply(int a, int b) {
+        return a * b;
+    }
 }
-C:\projects \Test\src>javac -d ../bin com/xyz/client /Pet.java
-C:\projects \Test\bin>java com/xyz/client /Pet
-C:\> java com.xyz.client .Pet
 
-2) Set the operating system CLASSP ATH environment variable to have a jar file c:/projects/T est/pet.jar, which has the Pet.class file in it
-3) Run it with -cp or -classpath option as shown below .
-Have you completed this unit? Then mark this unit as completed.
- Mark as Completed
-Next Unit »CLASSP ATH=C:/projects /Test2/bin
-CLASSP ATH=c:/projects /Test/pet.jar
-C:\>java -cp projects \Test\bin com/xyz/client /Pet
-C:\>java -classpath c:/projects /Test/pet.jar com.xyz.client .Pet 
-C:\projects \Test\src>java -cp ../bin com/xyz/client /Pet
+// Usage
+int sum = MathUtils.add(5, 3);  // No object creation
+
+MathUtils utils = new MathUtils();
+int product = utils.multiply(5, 3);  // Object required
+```
+
+#### Reason 3: No Multiple Inheritance
+
+Java doesn't support multiple class inheritance to avoid the **Diamond Problem**:
+
+```
+         Animal
+        /      \
+       /        \
+    Mammal    Bird
+       \        /
+        \      /
+         Bat
+         
+Problem: Which eat() method does Bat inherit?
+```
+
+**Java's Solution: Interfaces**
+
+```java
+// Multiple interface implementation (allowed)
+interface Flyable {
+    void fly();
+}
+
+interface Swimmable {
+    void swim();
+}
+
+class Duck implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("Duck flying");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("Duck swimming");
+    }
+}
+```
+
+**Java 8+: Default Methods in Interfaces**
+
+```java
+interface Vehicle {
+    default void start() {
+        System.out.println("Vehicle starting");
+    }
+}
+
+interface Electric {
+    default void charge() {
+        System.out.println("Charging battery");
+    }
+}
+
+// Multiple behavior inheritance (Java 8+)
+class Tesla implements Vehicle, Electric {
+    // Inherits both default methods
+}
+```
+
+#### Reason 4: No Operator Overloading
+
+Java doesn't support operator overloading (except for `+` with Strings):
+
+```java
+// String concatenation (built-in)
+String result = "Hello" + " " + "World";  // OK
+
+// Numeric addition
+int sum = 5 + 3;  // OK
+
+// BigDecimal - verbose without operator overloading
+BigDecimal a = new BigDecimal("10.5");
+BigDecimal b = new BigDecimal("20.3");
+BigDecimal c = new BigDecimal("5.2");
+
+// Without operator overloading (current Java)
+BigDecimal result = a.add(b).multiply(c);  // Verbose
+
+// With operator overloading (not supported)
+// BigDecimal result = (a + b) * c;  // Would be cleaner
+```
 
 ---
 
+## Java vs C++
 
+### Key Differences
 
-**Source**: Extracted from PDF
-**Last Updated**: 2026-06-03
+```
+┌────────────────────────────────────────────────────────────┐
+│              JAVA VS C++ COMPARISON                        │
+├────────────────┬───────────────────┬───────────────────────┤
+│   Feature      │      Java         │        C++            │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Pointers       │ ❌ No pointers    │ ✅ Full pointer       │
+│                │ (references only) │    support            │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Multiple       │ ❌ No (interfaces │ ✅ Yes                │
+│ Inheritance    │    instead)       │                       │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Memory         │ ✅ Automatic GC   │ ❌ Manual (new/delete)│
+│ Management     │                   │                       │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Platform       │ ✅ Platform       │ ❌ Platform           │
+│ Independence   │    independent    │    dependent          │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Operator       │ ❌ No (except +)  │ ✅ Yes                │
+│ Overloading    │                   │                       │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Destructors    │ ❌ finalize()     │ ✅ Destructors        │
+│                │    (deprecated)   │                       │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Global         │ ❌ No             │ ✅ Yes                │
+│ Variables      │                   │                       │
+├────────────────┼───────────────────┼───────────────────────┤
+│ Structures/    │ ❌ No (classes    │ ✅ Yes                │
+│ Unions         │    only)          │                       │
+└────────────────┴───────────────────┴───────────────────────┘
+```
 
+### Example: Memory Management
+
+**C++ (Manual):**
+```cpp
+// C++ - Manual memory management
+class Person {
+    string name;
+public:
+    Person(string n) : name(n) {}
+    ~Person() {  // Destructor
+        cout << "Destroying " << name << endl;
+    }
+};
+
+void createPerson() {
+    Person* p = new Person("John");  // Allocate
+    // ... use p ...
+    delete p;  // Must manually free memory
+}
+```
+
+**Java (Automatic):**
+```java
+// Java - Automatic garbage collection
+class Person {
+    private String name;
+    
+    public Person(String name) {
+        this.name = name;
+    }
+    
+    // No destructor needed
+    // finalize() is deprecated - don't use it
+}
+
+void createPerson() {
+    Person p = new Person("John");  // Allocate
+    // ... use p ...
+    // No need to free - GC handles it
+}
+```
 
 ---
 
-## 📚 Related Topics
+## Java Compilation & Execution
 
-- [Java Overview](../Module%2001%20-%20Java%20Overview/)
-- [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
-- [OOP Concepts](../Module%2006%20-%20OOP%20and%20FP/)
+### Complete Workflow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         JAVA COMPILATION & EXECUTION WORKFLOW               │
+└─────────────────────────────────────────────────────────────┘
+
+Step 1: Write Source Code
+┌──────────────────────┐
+│   HelloWorld.java    │
+│                      │
+│ public class Hello { │
+│   public static void │
+│   main(String[] args)│
+│   {                  │
+│     System.out.print │
+│     ln("Hello!");    │
+│   }                  │
+│ }                    │
+└──────────────────────┘
+          ↓
+          
+Step 2: Compile with javac
+┌──────────────────────┐
+│   javac compiler     │
+│                      │
+│ • Syntax checking    │
+│ • Type checking      │
+│ • Code generation    │
+└──────────────────────┘
+          ↓
+          
+Step 3: Bytecode Generated
+┌──────────────────────┐
+│  HelloWorld.class    │
+│                      │
+│ CA FE BA BE 00 00... │
+│ (Platform-independent│
+│  bytecode)           │
+└──────────────────────┘
+          ↓
+          
+Step 4: JVM Execution
+┌──────────────────────────────────────┐
+│           JVM Process                │
+│                                      │
+│  1. Class Loading                    │
+│     ┌────────────────────┐          │
+│     │  Class Loader      │          │
+│     │  • Bootstrap       │          │
+│     │  • Extension       │          │
+│     │  • Application     │          │
+│     └────────────────────┘          │
+│              ↓                       │
+│  2. Bytecode Verification            │
+│     ┌────────────────────┐          │
+│     │  Verifier          │          │
+│     │  • Type safety     │          │
+│     │  • Access control  │          │
+│     └────────────────────┘          │
+│              ↓                       │
+│  3. Execution                        │
+│     ┌────────────────────┐          │
+│     │  Interpreter       │          │
+│     │  (Initial run)     │          │
+│     └────────────────────┘          │
+│              ↓                       │
+│     ┌────────────────────┐          │
+│     │  JIT Compiler      │          │
+│     │  (Hot code)        │          │
+│     └────────────────────┘          │
+│              ↓                       │
+│  4. Memory Management                │
+│     ┌────────────────────┐          │
+│     │  Garbage Collector │          │
+│     └────────────────────┘          │
+└──────────────────────────────────────┘
+          ↓
+          
+Step 5: Output
+┌──────────────────────┐
+│   Console Output     │
+│                      │
+│   Hello!             │
+└──────────────────────┘
+```
+
+### Bytecode Example
+
+**Source Code:**
+```java
+public class Simple {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+```
+
+**Compiled Bytecode (javap -c Simple.class):**
+```
+public int add(int, int);
+  Code:
+     0: iload_1        // Load first parameter
+     1: iload_2        // Load second parameter
+     2: iadd           // Add integers
+     3: ireturn        // Return result
+```
 
 ---
 
-## 💡 Key Takeaways
+## JVM Modes & Configuration
 
-Review the questions above and ensure you understand:
-- Core concepts and their practical applications
-- Real-world scenarios and use cases
-- Best practices and common pitfalls
+### JVM Execution Modes
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              JVM EXECUTION MODES                        │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. Interpreted Mode                                    │
+│     • Bytecode executed line by line                    │
+│     • Slower execution                                  │
+│     • Faster startup                                    │
+│     • Lower memory usage                                │
+│                                                          │
+│  2. Compiled Mode (JIT)                                 │
+│     • Bytecode compiled to native code                  │
+│     • Faster execution                                  │
+│     • Slower startup                                    │
+│     • Higher memory usage                               │
+│                                                          │
+│  3. Mixed Mode (Default)                                │
+│     • Combination of both                               │
+│     • Interprets initially                              │
+│     • Compiles hot spots                                │
+│     • Best overall performance                          │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### JVM Flavors
+
+#### 1. **Client VM (-client)**
+- Optimized for desktop applications
+- Faster startup time
+- Lower memory footprint
+- Less aggressive optimization
+
+#### 2. **Server VM (-server)**
+- Optimized for server applications
+- Slower startup time
+- Higher memory usage
+- Aggressive optimization for long-running processes
+
+**Check Current Mode:**
+```bash
+java -version
+
+# Output example:
+# Java HotSpot(TM) 64-Bit Server VM
+```
+
+### 32-bit vs 64-bit JVM
+
+```
+┌─────────────────────────────────────────────────────────┐
+│           32-BIT VS 64-BIT JVM                          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  32-bit JVM:                                            │
+│  • Maximum heap size: ~1.5-2 GB                         │
+│  • Lower memory overhead                                │
+│  • Faster for small applications                        │
+│  • Limited address space                                │
+│                                                          │
+│  64-bit JVM:                                            │
+│  • Maximum heap size: Theoretically unlimited           │
+│  • Higher memory overhead (~30-50% more)                │
+│  • Required for large applications                      │
+│  • Can address more memory                              │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Common JVM Arguments
+
+```bash
+# Memory Settings
+java -Xms512m -Xmx2g MyApp          # Initial/Max heap
+java -Xss1m MyApp                    # Thread stack size
+java -XX:MaxMetaspaceSize=256m MyApp # Metaspace limit
+
+# Garbage Collection
+java -XX:+UseG1GC MyApp              # Use G1 collector
+java -XX:+UseParallelGC MyApp        # Parallel collector
+java -XX:+UseConcMarkSweepGC MyApp   # CMS collector
+
+# Performance Tuning
+java -server MyApp                   # Server mode
+java -XX:+AggressiveOpts MyApp       # Aggressive optimization
+java -XX:+TieredCompilation MyApp    # Tiered compilation
+
+# Debugging & Monitoring
+java -verbose:gc MyApp               # GC logging
+java -XX:+PrintGCDetails MyApp       # Detailed GC info
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 MyApp
+
+# System Properties
+java -Dfile.encoding=UTF-8 MyApp
+java -Duser.timezone=UTC MyApp
+```
+
+### Monitoring JVM
+
+**Tools:**
+1. **jvisualvm** - Visual monitoring tool
+2. **jconsole** - JMX-based monitoring
+3. **jstat** - Command-line statistics
+4. **jmap** - Heap dumps
+5. **jstack** - Thread dumps
+
+**Example:**
+```bash
+# Monitor GC activity
+jstat -gc <pid> 1000
+
+# Generate heap dump
+jmap -dump:format=b,file=heap.bin <pid>
+
+# Thread dump
+jstack <pid> > threads.txt
+```
 
 ---
 
-**[⬆ Back to Top](#)**
+## Java Packages & JAR Files
+
+### Package Structure
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              JAVA PACKAGE HIERARCHY                     │
+└─────────────────────────────────────────────────────────┘
+
+com.company.project
+├── model
+│   ├── User.java
+│   ├── Product.java
+│   └── Order.java
+├── service
+│   ├── UserService.java
+│   └── OrderService.java
+├── repository
+│   ├── UserRepository.java
+│   └── OrderRepository.java
+└── util
+    ├── DateUtil.java
+    └── StringUtil.java
+```
+
+**Creating a Package:**
+```java
+// File: com/company/project/model/User.java
+package com.company.project.model;
+
+public class User {
+    private String name;
+    private String email;
+    
+    // Constructor, getters, setters
+}
+```
+
+**Using a Package:**
+```java
+// Import specific class
+import com.company.project.model.User;
+
+// Import all classes from package
+import com.company.project.model.*;
+
+// Use fully qualified name (no import)
+com.company.project.model.User user = new com.company.project.model.User();
+```
+
+### JAR Files
+
+**JAR (Java Archive)** is a package file format used to aggregate many Java class files and associated metadata into one file.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              JAR FILE STRUCTURE                         │
+└─────────────────────────────────────────────────────────┘
+
+myapp.jar
+├── META-INF/
+│   ├── MANIFEST.MF          # Manifest file
+│   └── services/            # Service provider configs
+├── com/
+│   └── company/
+│       └── project/
+│           ├── Main.class
+│           ├── model/
+│           │   ├── User.class
+│           │   └── Product.class
+│           └── service/
+│               └── UserService.class
+└── resources/
+    ├── config.properties
+    └── images/
+        └── logo.png
+```
+
+**Creating a JAR:**
+```bash
+# Create JAR
+jar cvf myapp.jar *.class
+
+# Create JAR with manifest
+jar cvfm myapp.jar manifest.txt *.class
+
+# Create executable JAR
+jar cvfe myapp.jar com.company.Main *.class
+
+# Extract JAR
+jar xvf myapp.jar
+
+# List JAR contents
+jar tvf myapp.jar
+```
+
+**Manifest File (META-INF/MANIFEST.MF):**
+```
+Manifest-Version: 1.0
+Main-Class: com.company.project.Main
+Class-Path: lib/dependency1.jar lib/dependency2.jar
+```
+
+**Running a JAR:**
+```bash
+# Run executable JAR
+java -jar myapp.jar
+
+# Run specific class from JAR
+java -cp myapp.jar com.company.project.Main
+```
+
+### JAR vs ZIP
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              JAR VS ZIP                                 │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  Similarities:                                          │
+│  • Both use ZIP compression                             │
+│  • Both can contain multiple files                      │
+│  • Both can be extracted with ZIP tools                 │
+│                                                          │
+│  Differences:                                           │
+│  JAR:                                                   │
+│  • Contains META-INF/MANIFEST.MF                        │
+│  • Can be executed by JVM                               │
+│  • Designed for Java classes                            │
+│  • Can be added to classpath                            │
+│                                                          │
+│  ZIP:                                                   │
+│  • Generic archive format                               │
+│  • No manifest file                                     │
+│  • Cannot be executed directly                          │
+│  • General purpose compression                          │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Best Practices
+
+### 1. **Development Environment Setup**
+
+```bash
+# Set JAVA_HOME
+export JAVA_HOME=/path/to/jdk
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Verify installation
+java -version
+javac -version
+```
+
+### 2. **Package Naming Conventions**
+
+```java
+// Use reverse domain name
+com.company.project.module
+
+// Examples:
+com.google.common.collect
+org.apache.commons.lang3
+io.github.username.project
+```
+
+### 3. **Class Organization**
+
+```java
+// One public class per file
+// File name must match class name
+
+// File: User.java
+package com.company.model;
+
+public class User {
+    // Class implementation
+}
+```
+
+### 4. **Compilation Best Practices**
+
+```bash
+# Compile with specific Java version
+javac -source 11 -target 11 MyClass.java
+
+# Compile with classpath
+javac -cp lib/*:. MyClass.java
+
+# Compile with output directory
+javac -d bin src/**/*.java
+```
+
+### 5. **Running Applications**
+
+```bash
+# Run with classpath
+java -cp bin:lib/* com.company.Main
+
+# Run with system properties
+java -Dconfig.file=app.properties com.company.Main
+
+# Run with JVM options
+java -Xms512m -Xmx2g -XX:+UseG1GC com.company.Main
+```
+
+---
+
+## Summary
+
+### Key Takeaways
+
+✅ **Java is platform-independent** through bytecode and JVM  
+✅ **JDK contains JRE, which contains JVM**  
+✅ **JIT compiler improves performance** by compiling hot code  
+✅ **Java is pragmatically OO** but not 100% pure  
+✅ **Automatic memory management** via garbage collection  
+✅ **Rich ecosystem** with extensive libraries and frameworks  
+✅ **Enterprise-ready** with proven scalability and security  
+
+### Next Steps
+
+1. ✅ Understand Java compilation process
+2. ✅ Learn about JVM architecture
+3. ➡️ Study [Compile-time vs Runtime](compile-vs-runtime.md)
+4. ➡️ Explore [Java Data Types](../Module%2002%20-%20Java%20Data%20Types/)
+5. ➡️ Master [Object-Oriented Programming](../Module%2006%20-%20OOP%20and%20FP/)
+
+---
+
+## Additional Resources
+
+- [Official Java Documentation](https://docs.oracle.com/en/java/)
+- [Java Language Specification](https://docs.oracle.com/javase/specs/)
+- [OpenJDK](https://openjdk.org/)
+- [Java Community Process](https://jcp.org/)
+
+---
+
+**[← Back to Module Index](README.md)** | **[Next: Compile-time vs Runtime →](compile-vs-runtime.md)**
