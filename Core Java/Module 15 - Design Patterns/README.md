@@ -1,40 +1,40 @@
-# Module 15: Design Patterns
+# Design Patterns
 
-## 📚 Module Overview
+> **Module Design** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 15: design patterns.
+## 📚 Overview
+
+This module covers design patterns concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Design Patterns Overview](design-patterns-overview.md)
+2. [Singleton Pattern](singleton-pattern.md)
+3. [Structural Design Patterns](structural-patterns.md)
+4. [Flyweight Pattern](flyweight-pattern.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Design Patterns Overview
+- Singleton Pattern
+- Structural Design Patterns
+- Flyweight Pattern
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of design patterns with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [12 Java design patterns interview Q&As   Java Successcom](59-12-Java-design-patterns-interview-QAs-_-Java-Successcom.md)
-2. [5 Java singleton design pattern interview Q&As   Java Successcom](60-5-Java-singleton-design-pattern-interview-QAs-_-Java-Successcom.md)
-3. [Java Proxy Decorator Adapter Bridge and Facade design patterns Interview Q&As   Java Successcom](61-Java-Proxy-Decorator-Adapter-Bridge-and-Facade-design-patterns-Interview-QAs-_-Java-Successcom.md)
-4. [3 Flyweight design pattern Interview Q&As to improve memory usage performance   Java Successcom](62-3-Flyweight-design-pattern-Interview-QAs-to-improve-memory-usage-performance-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 4
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

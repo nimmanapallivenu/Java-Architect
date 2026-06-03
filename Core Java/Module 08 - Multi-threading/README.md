@@ -1,45 +1,50 @@
-# Module 08: Multi-threading & Concurrency
+# Multi-threading
 
-## 📚 Module Overview
+> **Module Multi** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 08: multi-threading & concurrency.
+## 📚 Overview
+
+This module covers multi-threading concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Multi-threading Fundamentals](multithreading-fundamentals.md)
+2. [Locks & Synchronized](locks-synchronized.md)
+3. [Thread Scheduling & Daemon Threads](thread-scheduling.md)
+4. [Executor Framework](executor-framework.md)
+5. [ExecutorService vs Fork/Join & Future](executor-forkjoin-future.md)
+6. [ThreadLocal](threadlocal.md)
+7. [Thread Control Methods](thread-control.md)
+8. [Threading Differences](threading-differences.md)
+9. [Threading Scenarios](threading-scenarios.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Multi-threading Fundamentals
+- Locks & Synchronized
+- Thread Scheduling & Daemon Threads
+- Executor Framework
+- ExecutorService vs Fork/Join & Future
+- ThreadLocal
+- Thread Control Methods
+- Threading Differences
+- Threading Scenarios
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of multi-threading with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [17 Java multi threading interview Q&As   Java Successcom](34-17-Java-multi-threading-interview-QAs-_-Java-Successcom.md)
-2. [7 Java locks synchronized keyword interview Q&As   Java Successcom](35-7-Java-locks-synchronized-keyword-interview-QAs-_-Java-Successcom.md)
-3. [9 blocking scheduling daemon threads interview Q&As   Java Successcom](36-9-blocking-scheduling-daemon-threads-interview-QAs-_-Java-Successcom.md)
-4. [7 Java Executor framework Interview Q&As   Java Successcom](37-7-Java-Executor-framework-Interview-QAs-_-Java-Successcom.md)
-5. [ExecutorService Vs Fork Join Future Vs CompletableFuture Interview Q&As   Java Successcom](38-ExecutorService-Vs-Fork_Join-Future-Vs-CompletableFuture-Interview-QAs-_-Java-Successcom.md)
-6. [7 Java ThreadLocal interview Q&As   Java Successcom](39-7-Java-ThreadLocal-interview-QAs-_-Java-Successcom.md)
-7. [Java Thread stop resume suspend interrupt interview Q&As   Java Successcom](40-Java-Thread-stop-resume-suspend-interrupt-interview-QAs-_-Java-Successcom.md)
-8. [12 Java multi threading differences between X and Y Q&As   Java Successcom](41-12-Java-multi-threading-differences-between-X-and-Y-QAs-_-Java-Successcom.md)
-9. [Java multi threading 15 scenarios interview Q&As   Java Successcom](42-Java-multi-threading-15-scenarios-interview-QAs-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 9
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

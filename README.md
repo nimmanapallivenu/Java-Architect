@@ -66,38 +66,32 @@ This comprehensive guide is designed to take you from a Java developer to a Java
 
 ## Core Java Modules
 
-### Module 01: Java Overview
-- [01. Java Overview & Architecture](Core%20Java/Module%2001%20-%20Java%20Overview/01-java-overview.md)
-- [02. Compile-time vs Runtime](Core%20Java/Module%2001%20-%20Java%20Overview/02-compile-vs-runtime.md)
+> **[📖 View Complete Core Java Guide](Core%20Java/README.md)** - Comprehensive 15-module learning path
 
-### Module 02: Java Data Types
-- [03. Java Data Types Deep Dive](Core%20Java/Module%2002%20-%20Java%20Data%20Types/03-data-types.md)
-- [04. Primitives & Objects Memory](Core%20Java/Module%2002%20-%20Java%20Data%20Types/04-memory-consumption.md)
-- [05. Autoboxing & Unboxing](Core%20Java/Module%2002%20-%20Java%20Data%20Types/05-autoboxing-unboxing.md)
-- [06. String Class Mastery](Core%20Java/Module%2002%20-%20Java%20Data%20Types/06-string-class.md)
+### Quick Access by Phase
 
-### Module 03: Modifiers, Annotations & Initializers
-- [07. Java Modifiers](Core%20Java/Module%2003%20-%20Modifiers%20Annotations%20Initializers/07-java-modifiers.md)
-- [08. Java Annotations](Core%20Java/Module%2003%20-%20Modifiers%20Annotations%20Initializers/08-annotations.md)
-- [09. Annotation Processing](Core%20Java/Module%2003%20-%20Modifiers%20Annotations%20Initializers/09-annotation-processing.md)
+#### Phase 1: Java Fundamentals
+- **[Module 01 - Java Overview](Core%20Java/Module%2001%20-%20Java%20Overview/)** - JVM, JDK, JRE, Platform Basics
+- **[Module 02 - Java Data Types](Core%20Java/Module%2002%20-%20Java%20Data%20Types/)** - Primitives, Wrappers, Strings
+- **[Module 03 - Modifiers & Annotations](Core%20Java/Module%2003%20-%20Modifiers%20Annotations%20Initializers/)** - Access Control, Metadata
+- **[Module 04 - Classes & Interfaces](Core%20Java/Module%2004%20-%20Classes%20Interfaces%20ClassLoaders/)** - OOP Building Blocks
 
-### Module 04: Classes, Interfaces & Class Loaders
-- [10. Classes and Interfaces](Core%20Java/Module%2004%20-%20Classes%20Interfaces%20ClassLoaders/10-classes-interfaces.md)
-- [11. Abstract Classes vs Interfaces](Core%20Java/Module%2004%20-%20Classes%20Interfaces%20ClassLoaders/11-abstract-vs-interface.md)
-- [12. Class Loading Mechanism](Core%20Java/Module%2004%20-%20Classes%20Interfaces%20ClassLoaders/12-class-loading.md)
+#### Phase 2: Object-Oriented Mastery
+- **[Module 05 - Java Objects](Core%20Java/Module%2005%20-%20Java%20Objects/)** - Object Behavior, Equality, Immutability
+- **[Module 06 - OOP & FP](Core%20Java/Module%2006%20-%20OOP%20and%20FP/)** - Design Principles, Lambdas, Streams
 
-### Module 05: Java Objects
-- [13. Object Class Methods](Core%20Java/Module%2005%20-%20Java%20Objects/13-object-class-methods.md)
-- [14. wait() & notify()](Core%20Java/Module%2005%20-%20Java%20Objects/14-wait-notify.md)
-- [15. equals() vs == and Pass by Reference](Core%20Java/Module%2005%20-%20Java%20Objects/15-equals-reference.md)
-- [16. Immutable Objects](Core%20Java/Module%2005%20-%20Java%20Objects/16-immutable-objects.md)
-- [17. Serialization, Cloning & Casting](Core%20Java/Module%2005%20-%20Java%20Objects/17-serialization-cloning.md)
+#### Phase 3: Advanced Concepts
+- **[Module 07 - Generics & Collections](Core%20Java/Module%2007%20-%20Generics%20and%20Collections/)** - Type Safety, Data Structures
+- **[Module 08 - Multi-threading](Core%20Java/Module%2008%20-%20Multi-threading/)** - Concurrency, Thread Safety
+- **[Module 09 - Exception Handling](Core%20Java/Module%2009%20-%20Exception%20Handling/)** - Error Management
+- **[Module 10 - Java I/O & NIO](Core%20Java/Module%2010%20-%20Java%20IO%20and%20NIO/)** - File Operations, Streams
 
-### Module 06: OOP & Functional Programming
-- [18. OOP Principles](Core%20Java/Module%2006%20-%20OOP%20and%20FP/18-oop-principles.md)
-- [19. Inheritance vs Composition](Core%20Java/Module%2006%20-%20OOP%20and%20FP/19-inheritance-composition.md)
-- [20. Polymorphism](Core%20Java/Module%2006%20-%20OOP%20and%20FP/20-polymorphism.md)
-- [21. OOP Design Principles](Core%20Java/Module%2006%20-%20OOP%20and%20FP/21-design-principles.md)
+#### Phase 4: Professional Development
+- **[Module 11 - JVM](Core%20Java/Module%2011%20-%20JVM/)** - Memory Model, GC, Profiling
+- **[Module 12 - What's New](Core%20Java/Module%2012%20-%20Whats%20New/)** - Java 7, 8 Features
+- **[Module 13 - Code Quality](Core%20Java/Module%2013%20-%20Code%20Quality/)** - Testing, Reviews, Best Practices
+- **[Module 14 - Performance & Memory](Core%20Java/Module%2014%20-%20Performance%20and%20Memory/)** - Optimization, Tuning
+- **[Module 15 - Design Patterns](Core%20Java/Module%2015%20-%20Design%20Patterns/)** - Reusable Solutions
 - [22. Functional Programming in Java](Core%20Java/Module%2006%20-%20OOP%20and%20FP/22-functional-programming.md)
 - [23. Lambda Expressions](Core%20Java/Module%2006%20-%20OOP%20and%20FP/23-lambda-expressions.md)
 

@@ -1,38 +1,36 @@
-# Module 10: Java I/O & NIO
+# Java IO and NIO
 
-## 📚 Module Overview
+> **Module Java** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 10: java i/o & nio.
+## 📚 Overview
+
+This module covers java io and nio concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Java I/O & NIO Fundamentals](io-nio-fundamentals.md)
+2. [Java 8 File Operations](java8-file-operations.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Java I/O & NIO Fundamentals
+- Java 8 File Operations
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of java io and nio with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [15 Java old I O and NIO ie New I O interview Q&As   Java Successcom](44-15-Java-old-I_O-and-NIO-ie-New-I_O-interview-QAs-_-Java-Successcom.md)
-2. [Java 8 way to reading files   Java Successcom](45-Java-8-way-to-reading-files-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 2
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

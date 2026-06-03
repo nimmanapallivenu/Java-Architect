@@ -1,41 +1,42 @@
-# Module 05: Java Objects
+# Java Objects
 
-## 📚 Module Overview
+> **Module Java** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 05: java objects.
+## 📚 Overview
+
+This module covers java objects concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Object Class Methods](object-class-methods.md)
+2. [wait() & notify() Methods](wait-notify.md)
+3. [equals() vs == & Pass by Reference](equals-pass-by-reference.md)
+4. [Immutable Objects](immutable-objects.md)
+5. [Serialization, Cloning & Casting](serialization-cloning-casting.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Object Class Methods
+- wait() & notify() Methods
+- equals() vs == & Pass by Reference
+- Immutable Objects
+- Serialization, Cloning & Casting
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of java objects with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [5 Java Object class methods interview Q&As   Java Successcom](15-5-Java-Object-class-methods-interview-QAs-_-Java-Successcom.md)
-2. [3 Object wait notify interview Q&As   Java Successcom](16-3-Object-wait-notify-interview-QAs-_-Java-Successcom.md)
-3. [7 Object equals Vs and pass by reference Vs value interview Q&As   Java Successcom](17-7-Object-equals-Vs-and-pass-by-reference-Vs-value-interview-QAs-_-Java-Successcom.md)
-4. [10 Java immutable objects interview Q&As   Java Successcom](18-10-Java-immutable-objects-interview-QAs-_-Java-Successcom.md)
-5. [10 Java serialization cloning and casting interview Q&As   Java Successcom](19-10-Java-serialization-cloning-and-casting-interview-QAs-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 5
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

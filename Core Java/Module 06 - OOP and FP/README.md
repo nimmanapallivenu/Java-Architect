@@ -1,43 +1,46 @@
-# Module 06: OOP & Functional Programming
+# OOP and FP
 
-## 📚 Module Overview
+> **Module OOP** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 06: oop & functional programming.
+## 📚 Overview
+
+This module covers oop and fp concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [OOP Principles](oop-principles.md)
+2. [Inheritance vs Composition](inheritance-vs-composition.md)
+3. [Polymorphism](polymorphism.md)
+4. [OOP Design Principles](oop-design-principles.md)
+5. [OOP vs Functional Programming](oop-vs-fp.md)
+6. [Functional Programming in Java](functional-programming.md)
+7. [Lambda Expressions](lambda-expressions.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- OOP Principles
+- Inheritance vs Composition
+- Polymorphism
+- OOP Design Principles
+- OOP vs Functional Programming
+- Functional Programming in Java
+- Lambda Expressions
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of oop and fp with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [10 Java OOP Interview Q&As   Java Successcom](20-10-Java-OOP-Interview-QAs-_-Java-Successcom.md)
-2. [5 Inheritance Vs Composition OOP Interview Q&As   Java Successcom](21-5-Inheritance-Vs-Composition-OOP-Interview-QAs-_-Java-Successcom.md)
-3. [2 Polymorphism OOP Interview Q&As   Java Successcom](22-2-Polymorphism-OOP-Interview-QAs-_-Java-Successcom.md)
-4. [8 OOP Design principles interview Q&As   Java Successcom](23-8-OOP-Design-principles-interview-QAs-_-Java-Successcom.md)
-5. [5 OOP Vs FP FP concepts where to use FP Q&As   Java Successcom](24-5-OOP-Vs-FP-FP-concepts-where-to-use-FP-QAs-_-Java-Successcom.md)
-6. [19 Java Functional Programming ie FP interview Q&As   Java Successcom](25-19-Java-Functional-Programming-ie-FP-interview-QAs-_-Java-Successcom.md)
-7. [Java FP Lambda expressions by examples   Java Successcom](26-Java-FP-Lambda-expressions-by-examples-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 7
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

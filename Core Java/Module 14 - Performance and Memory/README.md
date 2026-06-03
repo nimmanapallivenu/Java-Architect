@@ -1,39 +1,38 @@
-# Module 14: Performance & Memory
+# Performance and Memory
 
-## 📚 Module Overview
+> **Module Performance** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 14: performance & memory.
+## 📚 Overview
+
+This module covers performance and memory concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Performance Considerations](performance-considerations.md)
+2. [Memory Management](memory-management.md)
+3. [Memory Leak Detection](memory-leak-detection.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Performance Considerations
+- Memory Management
+- Memory Leak Detection
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of performance and memory with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [4 Java application performance considerations interview Q&As   Java Successcom](56-4-Java-application-performance-considerations-interview-QAs-_-Java-Successcom.md)
-2. [8 Java memory management interview Q&As   Java Successcom](57-8-Java-memory-management-interview-QAs-_-Java-Successcom.md)
-3. [jvisualvm to detect memory leak   Java Successcom](58-jvisualvm-to-detect-memory-leak-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 3
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

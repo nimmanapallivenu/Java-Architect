@@ -1,43 +1,46 @@
-# Module 07: Generics & Collections
+# Generics and Collections
 
-## 📚 Module Overview
+> **Module Generics** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 07: generics & collections.
+## 📚 Overview
+
+This module covers generics and collections concepts essential for Java developers and architects.
+
+## 📖 Topics Covered
+
+1. [Java Generics](generics.md)
+2. [Generics Wildcards](generics-wildcards.md)
+3. [Java Collections Framework](collections-framework.md)
+4. [Data Structures](data-structures.md)
+5. [Sorting Collections](sorting-collections.md)
+6. [Map Interface & Caching](map-caching.md)
+7. [Lambda with Collections](lambda-collections.md)
+
+## 🎯 Learning Objectives
+
+After completing this module, you will understand:
+
+- Java Generics
+- Generics Wildcards
+- Java Collections Framework
+- Data Structures
+- Sorting Collections
+- Map Interface & Caching
+- Lambda with Collections
+
+## 📝 Navigation
+
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
+
+## 💡 Key Takeaways
+
+This module provides comprehensive coverage of generics and collections with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-## 📖 Contents
-
-1. [12 Java Generics Interview Q&As   Java Successcom](27-12-Java-Generics-Interview-QAs-_-Java-Successcom.md)
-2. [5 Java Generics Wildcards Interview Q&As   Java Successcom](28-5-Java-Generics-Wildcards-Interview-QAs-_-Java-Successcom.md)
-3. [17 Java Collection Framework JCF interview Q&As   Java Successcom](29-17-Java-Collection-Framework-JCF-interview-QAs-_-Java-Successcom.md)
-4. [9 Java data structures interview Q&As   Java Successcom](30-9-Java-data-structures-interview-QAs-_-Java-Successcom.md)
-5. [4 Sorting objects in a Collection interview Q&As   Java Successcom](31-4-Sorting-objects-in-a-Collection-interview-QAs-_-Java-Successcom.md)
-6. [8 Java Map interface Caching interview Q&As   Java Successcom](32-8-Java-Map-interface-Caching-interview-QAs-_-Java-Successcom.md)
-7. [Lambda expressions to work with Java 8 Collections   Java Successcom](33-Lambda-expressions-to-work-with-Java-8-Collections-_-Java-Successcom.md)
-
-
----
-
-## 🎯 Learning Path
-
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
-
----
-
-## 💡 Study Tips
-
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
-
----
-
-**Total Documents**: 7
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.

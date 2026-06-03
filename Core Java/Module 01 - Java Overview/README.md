@@ -1,41 +1,36 @@
-# Module 01: Java Overview
+# Java Overview
 
-## 📚 Module Overview
+> **Module Java** | Core Java Learning Path
 
-This module contains comprehensive interview questions and answers covering module 01: java overview.
+## 📚 Overview
 
----
+This module covers java overview concepts essential for Java developers and architects.
 
-## 📖 Contents
+## 📖 Topics Covered
 
-1. [17 Java Overview Interview Q&As   Java Successcom](01-17-Java-Overview-Interview-QAs-_-Java-Successcom.md)
-2. [java overview extracted](01-java-overview-extracted.md)
-3. [java overview](01-java-overview.md)
-4. [4 Java Compile time Vs Run time Interview Q&As   Java Successcom](02-4-Java-Compile-time-Vs-Run-time-Interview-QAs-_-Java-Successcom.md)
-5. [compile vs runtime](02-compile-vs-runtime.md)
+1. [Java Overview & Fundamentals](java-overview.md)
+2. [Compile-time vs Runtime](compile-vs-runtime.md)
 
+## 🎯 Learning Objectives
 
----
+After completing this module, you will understand:
 
-## 🎯 Learning Path
+- Java Overview & Fundamentals
+- Compile-time vs Runtime
 
-1. **Start Here**: Begin with the first document
-2. **Practice**: Try to answer questions before reading answers
-3. **Deep Dive**: Research topics you find challenging
-4. **Review**: Revisit difficult concepts regularly
+## 📝 Navigation
 
----
+- [← Back to Core Java Index](../README.md)
+- [→ Next Module](../)
 
-## 💡 Study Tips
+## 💡 Key Takeaways
 
-- 📝 Take notes on key concepts
-- 💻 Write code examples for each topic
-- 🔄 Review regularly to reinforce learning
-- 🤝 Discuss with peers or mentors
+This module provides comprehensive coverage of java overview with:
+- Detailed explanations
+- Real-world examples
+- Interview questions and answers
+- Best practices and patterns
 
 ---
 
-**Total Documents**: 5
-
-**[⬅ Back to Core Java](../)**
-
+**Note**: Each topic is designed to be self-contained while building upon previous concepts.
